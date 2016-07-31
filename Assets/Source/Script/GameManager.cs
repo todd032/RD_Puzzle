@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+
 
 public class GameManager : MonoBehaviour {
 
     public GameObject wall;
     public GameObject parent;
     public GameObject startPoint;
-    public int mapSector;
+    public GameObject Cam;
+    public int sectorNum;
+
     GameObject[,,] map;
 
 	void Awake () {
@@ -15,33 +20,31 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
-        MapMaker();
-        MapMaker();
+        RandomMapMaker(5, 5);
     }
 
-    public void MapMaker()
+    public void RandomMapMaker(int x, int y)
     {
-        int i, j;
-        if(mapSector != 0)
+        for (int i = -1; i < x + 1; i++)
         {
-            GameObject point;
-            point = Instantiate(startPoint, new Vector2(3 * (mapSector * 10-1),-3 *  (mapSector * 10-1)), 
-                this.transform.rotation) as GameObject;
-            point.transform.SetParent(this.transform);
-        }
-
-        for (i = -1 + mapSector * 10; i < 28 + mapSector * 10; i++)
-        {
-            for (j = -1 + mapSector * 10; j < 28 + mapSector * 10; j++)
+            for (int j = -1; j < y + 1; j++)
             {
-                if (i > 8 + mapSector * 10 && j > 8 + mapSector * 10)
-                    break;
-
                 GameObject temp;
                 temp = Instantiate(wall, new Vector2(3 * i, 3 * -j), this.transform.rotation) as GameObject;
                 temp.transform.SetParent(parent.transform);
 
-                
+                if (i == -1 || i == x)
+                {
+                    temp.GetComponent<WallCtrl>().close = true;
+                    continue;
+                }
+                if (j == -1 || j == y)
+                {
+                    temp.GetComponent<WallCtrl>().close = true;
+                    continue;
+                }
+
+
                 float a;
                 a = Random.Range(-1f, 1f);
                 if (a > 0)
@@ -56,37 +59,9 @@ public class GameManager : MonoBehaviour {
                 if (a > 0)
                     temp.transform.FindChild("LW").gameObject.SetActive(false);
                 a = Random.Range(-1f, 1f);
-
-                if (i == 10 + mapSector * 10)
-                    temp.transform.FindChild("LW").gameObject.SetActive(true);
-                if (i == 9 + mapSector * 10)
-                    temp.transform.FindChild("RW").gameObject.SetActive(true);
-                if (j == 10 + mapSector * 10)
-                    temp.transform.FindChild("TW").gameObject.SetActive(true);
-                if (j == 9 + mapSector * 10)
-                    temp.transform.FindChild("BW").gameObject.SetActive(true);
-
-                map[i - mapSector * 10 + 1, j - mapSector * 10 + 1, (mapSector) % 3] = temp;
             }
         }
 
-
-
-        mapSector++;
-    }
-
-    public void MapDestroyer()
-    {
-        int i, j;
-        for(i = 0; i < 30; i++)
-        {
-            for(j = 0; j < 30; j++)
-            {
-                if(map[i, j, mapSector/3] != null)
-                {
-                    Destroy(map[i, j, mapSector % 3]);
-                }
-            }
-        }
+        Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y, -10f);
     }
 }

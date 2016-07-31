@@ -3,47 +3,247 @@ using System.Collections;
 
 public class PlayerMove : MonoBehaviour {
 
-    public float moveTime;
+    public float normal;
+    public float oneBlocked;
+    public float twoBlocked;
+    public float earlyTouch;
+    public float swipeSensitivity;
 
-    public bool nearStop;
-    public bool blockedMove;
-    public bool topClosed, bottomClosed, rightClosed, leftClosed;
-    public bool cellClosed;
+    public BoxChecker upCheck;
+    public BoxChecker downCheck;
+    public BoxChecker leftCheck;
+    public BoxChecker rightCheck;
+    public BoxChecker mainCheck;
 
+    // Check Boxes near Player
+    bool topClosed;
+    bool bottomClosed;
+    bool rightClosed;
+    bool leftClosed;
+    bool cellClosed;
+
+    bool nearStop;
+
+    // romove location difference 
     float tx = 0, ty = 0;
     int x = 0, y = 0;
 
-    GameObject upCheck;
-    GameObject downCheck;
-    GameObject rightCheck;
-    GameObject leftCheck;
-    GameObject mainCheck;
+    // Input
+    Vector2 firstPressPos;
+    Vector2 secondPressPos;
+    Vector2 currentSwipe;
 
+    // About Player Game Info
     int step;
+    float playTime;
 
-    void Awake()
+    int itemA;
+    int itemB;
+    int dir;
+    float movingTime;
+
+
+    void Start () {
+        step = 0;
+        playTime = 0f;
+
+        dir = -1;
+        movingTime = 0f;
+	}
+
+    void Update()
     {
-        upCheck = this.gameObject.transform.FindChild("UpBoxChecker").gameObject;
-        downCheck = this.gameObject.transform.FindChild("DownBoxChecker").gameObject;
-        rightCheck = this.gameObject.transform.FindChild("RightBoxChecker").gameObject;
-        leftCheck = this.gameObject.transform.FindChild("LeftBoxChecker").gameObject;
-        mainCheck = this.gameObject.transform.FindChild("MainBoxChecker").gameObject;
+        Debug.Log(nearStop);
+        playTime += Time.deltaTime;
+        movingTime -= Time.deltaTime;
+
+        if (movingTime < 0)
+        {
+            nearStop = true;
+        }
+        else
+        {
+            nearStop = false;
+        }
+
+        if (movingTime < earlyTouch)
+        {
+            if (ReadTouchInput())
+            {
+                // Up
+                if (currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+                {
+                    dir = 0;
+                }
+
+                // down
+                if (currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+                {
+                    dir = 1;
+                }
+
+                // Left
+                if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+                {
+                    dir = 2;
+                }
+
+                // Right
+                if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+                {
+                    dir = 3;
+                }
+            }
+        }
+
+        if(dir > -1)
+        {
+            Move(dir, CheckCloseDirection(dir), nearStop);
+        }
+    }
+
+    bool ReadTouchInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            //save began touch 2d point
+            firstPressPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            //save ended touch 2d point
+            secondPressPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+
+            //create vector from the two points
+            currentSwipe = new Vector2(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
+        }
+
+        if (currentSwipe.magnitude > swipeSensitivity)
+        {
+            currentSwipe.Normalize();
+            return true;
+        }
+
+        return false;
+    }
+
+    // dir 0 1 2 3 = U D L R
+    void Move(int dir, int wallType, bool ns)
+    {
+        if (!ns)
+            return;
+
+        if(wallType == 0)
+        {
+            movingTime = normal;
+            step++;
+        }
+        else if(wallType == 1)
+        {
+            movingTime = oneBlocked;
+            step++;
+        }
+        else if(wallType == 2)
+        {
+            movingTime = twoBlocked;
+        }
+
+        if(dir == 0) { MoveUp(wallType); }
+        else if(dir == 1) { MoveDown(wallType); }
+        else if(dir == 2) { MoveLeft(wallType); }
+        else if(dir == 3) { MoveRight(wallType); }
+    }
+
+    void MoveUp(int wt)
+    {
+        ;
+    }
+
+    void MoveDown(int wt)
+    {
+        if(wt == 0)
+        {
+            iTween.MoveBy(this.gameObject, iTween.Hash("y", -3.0f, "time", normal));
+        }
+        else if(wt == 1)
+        {
+            iTween.MoveBy(this.gameObject, iTween.Hash("y", -3.0f, "time", oneBlocked));
+            mainCheck.wall.GetComponent<WallCtrl>().bw.SetActive(false);
+            downCheck.wall.GetComponent<WallCtrl>().tw.SetActive(false);
+        }
+        else if(wt == 2)
+        {
+            iTween.PunchPosition(this.gameObject, iTween.Hash("y", -1.0f, "time", twoBlocked));
+        }
+    }
+
+    void MoveLeft(int wt)
+    {
+        ;
+    }
+
+    void MoveRight(int wt)
+    {
+        if (wt == 0)
+        {
+            iTween.MoveBy(this.gameObject, iTween.Hash("x", 3.0f, "time", normal));
+        }
+        else if (wt == 1)
+        {
+            iTween.MoveBy(this.gameObject, iTween.Hash("x", 3.0f, "time", oneBlocked));
+            mainCheck.wall.GetComponent<WallCtrl>().rw.SetActive(false);
+            rightCheck.wall.GetComponent<WallCtrl>().lw.SetActive(false);
+        }
+        else if (wt == 2)
+        {
+            iTween.PunchPosition(this.gameObject, iTween.Hash("x", 1.0f, "time", twoBlocked));
+        }
+    }
+
+    // num of wall
+    int CheckCloseDirection(int dir)
+    {
+        int num = 0;
+        // Up
+        if(dir == 0)
+        {
+            if (mainCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
+                num++;
+            if (upCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
+                num++;
+        }
+        // Down
+        else if(dir == 1)
+        {
+            if (mainCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
+                num++;
+            if (downCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
+                num++;
+        }
+        // Left
+        else if(dir == 2)
+        {
+            if (mainCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
+                num++;
+            if (leftCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
+                num++;
+        }
+        // Right
+        else if(dir == 3)
+        {
+            if (mainCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
+                num++;
+            if (rightCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
+                num++;
+        }
+
+        return num;
     }
 
 
-	void Start () {
-        nearStop = true;
 
-        topClosed = false;
-        bottomClosed = false;
-        rightClosed = false;
-        leftClosed = false;
-        cellClosed = false;
-        blockedMove = false;
-
-        step = 0;
-	}
-	
+	/*
 	// Update is called once per frame
 	void FixedUpdate () {
         if (step > 0 && mainCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().close)
@@ -59,150 +259,175 @@ public class PlayerMove : MonoBehaviour {
 
     void Move()
     {
-
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetMouseButtonDown(0))
         {
-            if (!leftClosed)
-            {
-                iTween.MoveBy(this.gameObject, iTween.Hash("x", -3.0f, "y", 0f, "time", moveTime, "oncomplete", "BoxStop"));
-                step++;
-            }
-            else
-            {
-                blockedMove = true;
+            //save began touch 2d point
+            firstPressPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        }
+        if (Input.GetMouseButton(0))
+        {
+            if (firstPressPos == Vector2.zero)
+                return;
 
-                if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.activeSelf
-                    && leftCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("x", -1.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                }
-                else if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("x", -1.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                    mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.SetActive(false);
-                }
-                else if(leftCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("x", -1.6f, "time", moveTime, "oncomplete", "BoxStop"));
-                    leftCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.SetActive(false);
-                }
-                else
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("x", -2.5f, "time", moveTime, "oncomplete", "BoxStop"));
-                    leftCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().CellShake();
-                }
-            }
+            //save ended touch 2d point
+            secondPressPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 
-            nearStop = false;
+            //create vector from the two points
+            currentSwipe = new Vector2(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
         }
 
-        if (Input.GetKey(KeyCode.D))
+        if ( currentSwipe.magnitude > swipeSensitivity)
         {
-            if (!rightClosed)
+            currentSwipe.Normalize();
+
+            if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
-                iTween.MoveBy(this.gameObject, iTween.Hash("x", 3.0f, "y", 0f, "time", moveTime, "oncomplete", "BoxStop"));
-                step++;
-            }
-            else
-            {
-                blockedMove = true;
-                if(mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.activeSelf
-                    && rightCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.activeSelf)
+                if (!leftClosed)
                 {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("x", 1.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                }
-                else if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("x", 1.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                    mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.SetActive(false);
-                }
-                else if (rightCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("x", 1.6f, "time", moveTime, "oncomplete", "BoxStop"));
-                    rightCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.SetActive(false);
+                    iTween.MoveBy(this.gameObject, iTween.Hash("x", -3.0f, "y", 0f, "time", moveTime, "oncomplete", "BoxStop"));
+                    step++;
                 }
                 else
                 {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("x", 2.5f, "time", moveTime, "oncomplete", "BoxStop"));
-                    rightCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().CellShake();
+                    blockedMove = true;
+
+                    if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.activeSelf
+                        && leftCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("x", -1.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                    }
+                    else if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("x", -1.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                        mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.SetActive(false);
+                    }
+                    else if (leftCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("x", -1.6f, "time", moveTime, "oncomplete", "BoxStop"));
+                        leftCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("x", -2.5f, "time", moveTime, "oncomplete", "BoxStop"));
+                        leftCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().CellShake();
+                    }
                 }
-                    
+
+                nearStop = false;
             }
 
-            nearStop = false;
-        }
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            if (!topClosed)
+            if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
             {
-                iTween.MoveBy(this.gameObject, iTween.Hash("x", 0f, "y", 3.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                step++;
-            }
-            else
-            {
-                blockedMove = true;
-                
-                if(mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.activeSelf
-                    && upCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.activeSelf)
+                if (!rightClosed)
                 {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("y", 1.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                }
-                else if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("y", 1.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                    mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.SetActive(false);
-                }
-                else if (upCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("y", 1.6f, "time", moveTime, "oncomplete", "BoxStop"));
-                    upCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.SetActive(false);
+                    iTween.MoveBy(this.gameObject, iTween.Hash("x", 3.0f, "y", 0f, "time", moveTime, "oncomplete", "BoxStop"));
+                    step++;
                 }
                 else
                 {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("y", 2.5f, "time", moveTime, "oncomplete", "BoxStop"));
-                    upCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().CellShake();
+                    blockedMove = true;
+                    if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.activeSelf
+                        && rightCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("x", 1.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                    }
+                    else if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("x", 1.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                        mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("RW").gameObject.SetActive(false);
+                    }
+                    else if (rightCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("x", 1.6f, "time", moveTime, "oncomplete", "BoxStop"));
+                        rightCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("LW").gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("x", 2.5f, "time", moveTime, "oncomplete", "BoxStop"));
+                        rightCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().CellShake();
+                    }
+
                 }
+
+                nearStop = false;
             }
 
-            nearStop = false;
-        }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            if (!bottomClosed)
+            if (currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
             {
-                iTween.MoveBy(this.gameObject, iTween.Hash("x", 0f, "y", -3.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                step++;
-            }
-            else
-            {
-                blockedMove = true;
-
-                if(mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.activeSelf
-                    && downCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.activeSelf)
+                if (!topClosed)
                 {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("y", -1.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                }
-                else if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("y", -1.0f, "time", moveTime, "oncomplete", "BoxStop"));
-                    mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.SetActive(false);
-                }
-                    
-                else if (downCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.activeSelf)
-                {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("y", -1.6f, "time", moveTime, "oncomplete", "BoxStop"));
-                    downCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.SetActive(false);
+                    iTween.MoveBy(this.gameObject, iTween.Hash("x", 0f, "y", 3.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                    step++;
                 }
                 else
                 {
-                    iTween.PunchPosition(this.gameObject, iTween.Hash("y", -2.5f, "time", moveTime, "oncomplete", "BoxStop"));
-                    downCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().CellShake();
+                    blockedMove = true;
+
+                    if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.activeSelf
+                        && upCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("y", 1.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                    }
+                    else if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("y", 1.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                        mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.SetActive(false);
+                    }
+                    else if (upCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("y", 1.6f, "time", moveTime, "oncomplete", "BoxStop"));
+                        upCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("y", 2.5f, "time", moveTime, "oncomplete", "BoxStop"));
+                        upCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().CellShake();
+                    }
                 }
+
+                nearStop = false;
             }
 
-            nearStop = false;
+            if (currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+            {
+                if (!bottomClosed)
+                {
+                    iTween.MoveBy(this.gameObject, iTween.Hash("x", 0f, "y", -3.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                    step++;
+                }
+                else
+                {
+                    blockedMove = true;
+
+                    if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.activeSelf
+                        && downCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("y", -1.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                    }
+                    else if (mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("y", -1.0f, "time", moveTime, "oncomplete", "BoxStop"));
+                        mainCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("BW").gameObject.SetActive(false);
+                    }
+
+                    else if (downCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.activeSelf)
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("y", -1.6f, "time", moveTime, "oncomplete", "BoxStop"));
+                        downCheck.GetComponent<BoxChecker>().wall.gameObject.transform.FindChild("TW").gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        iTween.PunchPosition(this.gameObject, iTween.Hash("y", -2.5f, "time", moveTime, "oncomplete", "BoxStop"));
+                        downCheck.GetComponent<BoxChecker>().wall.gameObject.GetComponent<WallCtrl>().CellShake();
+                    }
+                }
+
+                nearStop = false;
+            }
+
+            currentSwipe = Vector2.zero;
+            firstPressPos = Vector2.zero;
+            secondPressPos = Vector2.zero;
         }
     }
 
@@ -253,4 +478,5 @@ public class PlayerMove : MonoBehaviour {
             return;
         }
     }
+    */
 }

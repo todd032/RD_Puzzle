@@ -3,19 +3,18 @@ using System.Collections;
 
 public class SectorStartPoint : MonoBehaviour {
 
-    public GameObject gm;
+    public GameManager gm;
 
     void Start()
     {
-        gm = GameObject.Find("GameManager").gameObject;
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
         if(col.gameObject.name == "MainBoxChecker")
         {
-            gm.GetComponent<GameManager>().MapDestroyer();
-            gm.GetComponent<GameManager>().MapMaker();
+            gm.sectorNum++;
             Destroy(this.gameObject);
         }
     }

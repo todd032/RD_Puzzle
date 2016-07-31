@@ -39,11 +39,6 @@ public class WallCtrl : MonoBehaviour {
         lw = this.transform.FindChild("LW").gameObject;
     }
 
-    void Update()
-    {
-
-    }
-
     void FixedUpdate () {
         if (shake && !check)
             StartCoroutine(CellShakeAndClose());
@@ -75,16 +70,6 @@ public class WallCtrl : MonoBehaviour {
         iTween.MoveBy(ru, iTween.Hash("x", -moveDistance, "y", -moveDistance, "time", moveTime));
         iTween.MoveBy(ld, iTween.Hash("x", moveDistance, "y", moveDistance, "time", moveTime));
         iTween.MoveBy(rd, iTween.Hash("x", -moveDistance, "y", moveDistance, "time", moveTime));
-        /*
-        if (tw.activeSelf == true)
-            iTween.MoveBy(tw, iTween.Hash("y", -moveDistance, "time", moveTime));
-        if (bw.activeSelf == true)
-            iTween.MoveBy(bw, iTween.Hash("y", moveDistance, "time", moveTime));
-        if (rw.activeSelf == true)
-            iTween.MoveBy(rw, iTween.Hash("x", -moveDistance, "time", moveTime));
-        if (lw.activeSelf == true)
-            iTween.MoveBy(lw, iTween.Hash("x", moveDistance, "time", moveTime));
-            */
 
         closeShape = true;
     }
@@ -95,17 +80,6 @@ public class WallCtrl : MonoBehaviour {
         iTween.MoveBy(ru, iTween.Hash("x", moveDistance, "y", moveDistance, "time", moveTime));
         iTween.MoveBy(ld, iTween.Hash("x", -moveDistance, "y", -moveDistance, "time", moveTime));
         iTween.MoveBy(rd, iTween.Hash("x", moveDistance, "y", -moveDistance, "time", moveTime));
-
-        /*
-        if (tw.activeSelf == true)
-            iTween.MoveBy(tw, iTween.Hash("y", moveDistance, "time", moveTime));
-        if (bw.activeSelf == true)
-            iTween.MoveBy(bw, iTween.Hash("y", -moveDistance, "time", moveTime));
-        if (rw.activeSelf == true)
-            iTween.MoveBy(rw, iTween.Hash("x", moveDistance, "time", moveTime));
-        if (lw.activeSelf == true)
-            iTween.MoveBy(lw, iTween.Hash("x", -moveDistance, "time", moveTime));
-            */
 
         closeShape = false;
     }
