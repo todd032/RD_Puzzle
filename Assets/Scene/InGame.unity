@@ -297,6 +297,22 @@ Prefab:
       propertyPath: leftCheck
       value: 
       objectReference: {fileID: 1717344664}
+    - target: {fileID: 11495366, guid: 3ef376bfb2c4b82408e8d792136c5552, type: 2}
+      propertyPath: normal
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11495366, guid: 3ef376bfb2c4b82408e8d792136c5552, type: 2}
+      propertyPath: twoBlocked
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11495366, guid: 3ef376bfb2c4b82408e8d792136c5552, type: 2}
+      propertyPath: oneBlocked
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 11495366, guid: 3ef376bfb2c4b82408e8d792136c5552, type: 2}
+      propertyPath: earlyTouch
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11447524, guid: 3ef376bfb2c4b82408e8d792136c5552, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 3ef376bfb2c4b82408e8d792136c5552, type: 2}

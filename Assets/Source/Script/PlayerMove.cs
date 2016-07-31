@@ -129,7 +129,7 @@ public class PlayerMove : MonoBehaviour {
     }
 
     // dir 0 1 2 3 = U D L R
-    void Move(int dir, int wallType, bool ns)
+    void Move(int d, int wallType, bool ns)
     {
         if (!ns)
             return;
@@ -149,10 +149,12 @@ public class PlayerMove : MonoBehaviour {
             movingTime = twoBlocked;
         }
 
-        if(dir == 0) { MoveUp(wallType); }
-        else if(dir == 1) { MoveDown(wallType); }
-        else if(dir == 2) { MoveLeft(wallType); }
-        else if(dir == 3) { MoveRight(wallType); }
+        if(d == 0) { MoveUp(wallType); }
+        else if(d == 1) { MoveDown(wallType); }
+        else if(d == 2) { MoveLeft(wallType); }
+        else if(d == 3) { MoveRight(wallType); }
+
+        dir = -1;
     }
 
     void MoveUp(int wt)
@@ -212,6 +214,8 @@ public class PlayerMove : MonoBehaviour {
                 num++;
             if (upCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
                 num++;
+            if (upCheck.wall.GetComponent<WallCtrl>().close)
+                num = 2;
         }
         // Down
         else if(dir == 1)
@@ -220,6 +224,8 @@ public class PlayerMove : MonoBehaviour {
                 num++;
             if (downCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
                 num++;
+            if (downCheck.wall.GetComponent<WallCtrl>().close)
+                num = 2;
         }
         // Left
         else if(dir == 2)
@@ -228,6 +234,8 @@ public class PlayerMove : MonoBehaviour {
                 num++;
             if (leftCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
                 num++;
+            if (leftCheck.wall.GetComponent<WallCtrl>().close)
+                num = 2;
         }
         // Right
         else if(dir == 3)
@@ -236,6 +244,8 @@ public class PlayerMove : MonoBehaviour {
                 num++;
             if (rightCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
                 num++;
+            if (rightCheck.wall.GetComponent<WallCtrl>().close)
+                num = 2;
         }
 
         return num;
