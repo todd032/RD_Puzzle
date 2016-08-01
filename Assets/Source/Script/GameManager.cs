@@ -21,7 +21,13 @@ public class GameManager : MonoBehaviour {
     void Start()
     {
         RandomMapMaker(5, 5);
-    }
+	}
+
+	void Update(){
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Application.Quit ();
+		}
+	}
 
     public void RandomMapMaker(int x, int y)
     {
