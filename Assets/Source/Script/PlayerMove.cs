@@ -14,6 +14,7 @@ public class PlayerMove : MonoBehaviour {
     public BoxChecker leftCheck;
     public BoxChecker rightCheck;
     public BoxChecker mainCheck;
+    public GameManager gm;
 
     // Check Boxes near Player
     bool topClosed;
@@ -53,7 +54,6 @@ public class PlayerMove : MonoBehaviour {
 
     void Update()
     {
-        Debug.Log(nearStop);
         playTime += Time.deltaTime;
         movingTime -= Time.deltaTime;
 
@@ -100,6 +100,8 @@ public class PlayerMove : MonoBehaviour {
         {
             Move(dir, CheckCloseDirection(dir), nearStop);
         }
+
+        GameOver();
     }
 
     bool ReadTouchInput()
@@ -251,7 +253,11 @@ public class PlayerMove : MonoBehaviour {
         return num;
     }
 
-
+    void GameOver()
+    {
+        if (CheckCloseDirection(1) > 1 && CheckCloseDirection(3) > 1)
+            gm.isGameOver = true;
+    }
 
 	/*
 	// Update is called once per frame

@@ -14,7 +14,7 @@ public class SectorStartPoint : MonoBehaviour {
     {
         if(col.gameObject.name == "MainBoxChecker")
         {
-            gm.sectorNum++;
+            gm.isGameClear = true;
             Destroy(this.gameObject);
         }
     }

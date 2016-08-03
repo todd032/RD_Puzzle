@@ -8,14 +8,18 @@ public class GameManager : MonoBehaviour {
 
     public GameObject wall;
     public GameObject parent;
-    public GameObject startPoint;
+    public GameObject checkPoint;
     public GameObject Cam;
-    public int sectorNum;
+    public int stageSectorNum;
+    public int currSectorNum;
 
     GameObject[,,] map;
+    public bool isGameOver;
+    public bool isGameClear;
 
 	void Awake () {
         map = new GameObject[30, 30, 3];
+        currSectorNum = 1;
     }
 
     void Start()
@@ -24,9 +28,14 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Update(){
-		if (Input.GetKeyDown (KeyCode.Escape)) {
-			Application.Quit ();
-		}
+        if (isGameClear)
+        {
+            Debug.Log("Clear!!");
+        }
+        else if (isGameOver)
+        {
+            Debug.Log("Game Over!");
+        }
 	}
 
     public void RandomMapMaker(int x, int y)
@@ -67,6 +76,9 @@ public class GameManager : MonoBehaviour {
                 a = Random.Range(-1f, 1f);
             }
         }
+
+        GameObject cp;
+        cp = Instantiate(checkPoint, new Vector2(3 * (x - 1), -3 * (y - 1)), this.transform.rotation) as GameObject;
 
         Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y, -10f);
     }
