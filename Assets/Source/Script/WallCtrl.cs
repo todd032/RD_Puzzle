@@ -21,6 +21,7 @@ public class WallCtrl : MonoBehaviour {
     public GameObject bw;
     public GameObject rw;
     public GameObject lw;
+    public GameObject WallParticle;
 
 	void Awake () {
         close = false;
@@ -90,5 +91,33 @@ public class WallCtrl : MonoBehaviour {
         iTween.PunchPosition(ru, iTween.Hash("x", -0.3f, "y", -0.3f, "time", shakeTime, "easetype", "easeInOutBack"));
         iTween.PunchPosition(ld, iTween.Hash("x", 0.3f, "y", 0.3f, "time", shakeTime, "easetype", "easeInOutBack"));
         iTween.PunchPosition(rd, iTween.Hash("x", -0.3f, "y", 0.3f, "time", shakeTime, "easetype", "easeInOutBack"));
+    }
+
+    public void WallBreaking(int dir)
+    {
+        if(dir == 0)
+        {
+            tw.SetActive(false);
+            GameObject p;
+            p = Instantiate(WallParticle, this.transform.position + new Vector3(0, 1.25f, 0), Quaternion.Euler(90, 90, 0)) as GameObject;
+        }
+        else if(dir == 1)
+        {
+            bw.SetActive(false);
+            GameObject p;
+            p = Instantiate(WallParticle, this.transform.position + new Vector3(0, -1.25f, 0), Quaternion.Euler(90, 90, 0)) as GameObject;
+        }
+        else if(dir == 2)
+        {
+            lw.SetActive(false);
+            GameObject p;
+            p = Instantiate(WallParticle, this.transform.position + new Vector3(-1.25f, 0, 0), Quaternion.Euler(0, 90, 0)) as GameObject;
+        }
+        else if(dir == 3)
+        {
+            rw.SetActive(false);
+            GameObject p;
+            p = Instantiate(WallParticle, this.transform.position + new Vector3(1.25f, 0, 0), Quaternion.Euler(0, 90, 0)) as GameObject;
+        }
     }
 }

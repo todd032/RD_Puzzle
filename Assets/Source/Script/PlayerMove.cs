@@ -184,8 +184,8 @@ public class PlayerMove : MonoBehaviour {
         else if(wt == 1)
         {
             iTween.MoveBy(this.gameObject, iTween.Hash("y", -3.0f, "time", oneBlocked));
-            mainCheck.wall.GetComponent<WallCtrl>().bw.SetActive(false);
-            downCheck.wall.GetComponent<WallCtrl>().tw.SetActive(false);
+            mainCheck.wall.GetComponent<WallCtrl>().WallBreaking(1);
+            downCheck.wall.GetComponent<WallCtrl>().WallBreaking(0);
         }
         else if(wt == 2)
         {
@@ -207,8 +207,8 @@ public class PlayerMove : MonoBehaviour {
         else if (wt == 1)
         {
             iTween.MoveBy(this.gameObject, iTween.Hash("x", 3.0f, "time", oneBlocked));
-            mainCheck.wall.GetComponent<WallCtrl>().rw.SetActive(false);
-            rightCheck.wall.GetComponent<WallCtrl>().lw.SetActive(false);
+            mainCheck.wall.GetComponent<WallCtrl>().WallBreaking(3);
+            rightCheck.wall.GetComponent<WallCtrl>().WallBreaking(2);
         }
         else if (wt == 2)
         {

@@ -304,6 +304,7 @@ MonoBehaviour:
   bw: {fileID: 0}
   rw: {fileID: 0}
   lw: {fileID: 0}
+  WallParticle: {fileID: 196020, guid: 9d33c0204ada30340852301de35a27d4, type: 2}
 --- !u!212 &21209330
 SpriteRenderer:
   m_ObjectHideFlags: 1
