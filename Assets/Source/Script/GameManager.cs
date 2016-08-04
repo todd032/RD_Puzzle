@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using System.IO;
 
 
@@ -17,6 +18,9 @@ public class GameManager : MonoBehaviour {
     public bool isGameOver;
     public bool isGameClear;
 
+    public GameObject ClearBox;
+    public GameObject GameOverBox;
+
 	void Awake () {
         map = new GameObject[30, 30, 3];
         currSectorNum = 1;
@@ -30,11 +34,11 @@ public class GameManager : MonoBehaviour {
 	void Update(){
         if (isGameClear)
         {
-            Debug.Log("Clear!!");
+            ClearBox.SetActive(true);
         }
         else if (isGameOver)
         {
-            Debug.Log("Game Over!");
+            GameOverBox.SetActive(true);
         }
 	}
 
@@ -81,5 +85,10 @@ public class GameManager : MonoBehaviour {
         cp = Instantiate(checkPoint, new Vector2(3 * (x - 1), -3 * (y - 1)), this.transform.rotation) as GameObject;
 
         Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y, -10f);
+    }
+
+    public void ToMenu()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }
