@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using System.IO;
 
 
@@ -8,14 +9,21 @@ public class GameManager : MonoBehaviour {
 
     public GameObject wall;
     public GameObject parent;
-    public GameObject startPoint;
+    public GameObject checkPoint;
     public GameObject Cam;
-    public int sectorNum;
+    public int stageSectorNum;
+    public int currSectorNum;
 
     GameObject[,,] map;
+    public bool isGameOver;
+    public bool isGameClear;
+
+    public GameObject ClearBox;
+    public GameObject GameOverBox;
 
 	void Awake () {
         map = new GameObject[30, 30, 3];
+        currSectorNum = 1;
     }
 
     void Start()
@@ -24,9 +32,14 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Update(){
-		if (Input.GetKeyDown (KeyCode.Escape)) {
-			Application.Quit ();
-		}
+        if (isGameClear)
+        {
+            ClearBox.SetActive(true);
+        }
+        else if (isGameOver)
+        {
+            GameOverBox.SetActive(true);
+        }
 	}
 
     public void RandomMapMaker(int x, int y)
@@ -68,6 +81,14 @@ public class GameManager : MonoBehaviour {
             }
         }
 
+        GameObject cp;
+        cp = Instantiate(checkPoint, new Vector2(3 * (x - 1), -3 * (y - 1)), this.transform.rotation) as GameObject;
+
         Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y, -10f);
+    }
+
+    public void ToMenu()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }
