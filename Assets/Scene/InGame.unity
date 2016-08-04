@@ -311,7 +311,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11495366, guid: 3ef376bfb2c4b82408e8d792136c5552, type: 2}
       propertyPath: earlyTouch
-      value: 0.3
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 11495366, guid: 3ef376bfb2c4b82408e8d792136c5552, type: 2}
       propertyPath: gm
