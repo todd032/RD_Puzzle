@@ -30,13 +30,13 @@ public class GameManager : MonoBehaviour {
     }
 
     void Start()
-    {
+	{
+		RandomMapMaker (5, 5);
 		if (server_url == null || server_url == "") {
 			server_url = "http://bismute.xyz:3000";
 		}
 		WWW www = new WWW (server_url);
 		StartCoroutine (WaitForRequest (www));
-		RandomMapMaker (5, 5);
 	}
 
 	void Update(){
@@ -58,19 +58,50 @@ public class GameManager : MonoBehaviour {
 			string data = (string)www.text;
 			Debug.Log (data.ToString());
 			JsonData json = json_parser (data);
-			for (int i = 0; i < int.Parse (json["n"].ToString()); i++) {
-				for (int j = 0; j < int.Parse (json["m"].ToString()); j++) {
-					Debug.Log (json ["map"] [i] [j]);
-				}
-			}
+			ServerMapMaker (json);
 		} else {
 			Debug.Log ("WWW ERROR!: " + www.error);
 		}
 	}
 
-	public void ServerMapMaker(int x, int y)
+	public void ServerMapMaker(JsonData json)
 	{
+		int x = int.Parse (json ["n"].ToString ());
+		int y = int.Parse (json ["m"].ToString ());
 
+		for (int i = -1; i < x + 1; i++)
+		{
+			for (int j = -1; j < y + 1; j++)
+			{
+				GameObject temp;
+				temp = Instantiate(wall, new Vector2(3 * i, 3 * -j), this.transform.rotation) as GameObject;
+				temp.transform.SetParent(parent.transform);
+
+				if (i == -1 || i == x)
+				{
+					temp.GetComponent<WallCtrl>().close = true;
+					continue;
+				}
+				if (j == -1 || j == y)
+				{
+					temp.GetComponent<WallCtrl>().close = true;
+					continue;
+				}
+
+				int map_num = int.Parse(json["map"][i][j].ToString());
+				string[] direction = new string[] {"RW", "LW", "BW", "TW"};
+				for(int k = 0; k < 4; k++){
+					temp.transform.FindChild (direction [k]).gameObject.SetActive ((map_num % 2) == 1);	
+					map_num /= 2;
+				}
+				float a;
+			}
+		}
+
+		GameObject cp;
+		cp = Instantiate(checkPoint, new Vector2(3 * (x - 1), -3 * (y - 1)), this.transform.rotation) as GameObject;
+
+		Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y, -10f);
 	}
 
     public void RandomMapMaker(int x, int y)
@@ -94,21 +125,10 @@ public class GameManager : MonoBehaviour {
                     continue;
                 }
 
-
-                float a;
-                a = Random.Range(-1f, 1f);
-                if (a > 0)
-                    temp.transform.FindChild("TW").gameObject.SetActive(false);
-                a = Random.Range(-1f, 1f);
-                if (a > 0)
-                    temp.transform.FindChild("BW").gameObject.SetActive(false);
-                a = Random.Range(-1f, 1f);
-                if (a > 0)
-                    temp.transform.FindChild("RW").gameObject.SetActive(false);
-                a = Random.Range(-1f, 1f);
-                if (a > 0)
-                    temp.transform.FindChild("LW").gameObject.SetActive(false);
-                a = Random.Range(-1f, 1f);
+				string[] direction = new string[] { "TW", "BW", "RW", "LW" };
+				for (int k = 0; k < 4; k++) {
+					temp.transform.FindChild (direction[k]).gameObject.SetActive (false);
+				}
             }
         }
 
