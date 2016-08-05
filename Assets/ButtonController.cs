@@ -2,14 +2,32 @@
 using System.Collections;
 
 public class ButtonController : MonoBehaviour {
+	public GameObject dia_quit;
+	private bool isShowing;
+
+	void Start(){
+		isShowing = false;
+		dia_quit.SetActive (isShowing);
+	}
+
 	void Update(){
 		if (Input.GetKeyDown (KeyCode.Escape)) {
-			Application.Quit ();
+			isShowing = !isShowing;
+			dia_quit.SetActive (isShowing);
 		}
 	}
 
 	public void LoadInGame () {
 		Debug.Log ("LoadInGame");
-		Application.LoadLevel (1);
+		Application.LoadLevel (2);
+	}
+
+	public void btn_yes(){
+		Application.Quit ();
+	}
+
+	public void btn_no(){
+		isShowing = !isShowing;
+		dia_quit.SetActive (isShowing);
 	}
 }
