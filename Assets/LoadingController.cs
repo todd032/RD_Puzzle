@@ -20,7 +20,7 @@ public class LoadingController : MonoBehaviour {
 	void Update () {
 		timer += Time.deltaTime;
 		if (timer > 3 || Input.anyKey) {
-			Application.LoadLevel (1);
+			Application.LoadLevel ("Menu");
 		}
 		if (timer <= 1 / fadeSpeed) {
 			FadeIn (timer * fadeSpeed);

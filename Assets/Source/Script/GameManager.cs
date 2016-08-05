@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.IO;
-
+using LitJson;
 
 public class GameManager : MonoBehaviour {
 
@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour {
     public GameObject ClearBox;
     public GameObject GameOverBox;
 
+	public string server_url;
+
 	void Awake () {
         map = new GameObject[30, 30, 3];
         currSectorNum = 1;
@@ -28,7 +30,12 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
-        RandomMapMaker(5, 5);
+		if (server_url == null || server_url == "") {
+			server_url = "http://bismute.xyz:3000";
+		}
+		WWW www = new WWW (server_url);
+		StartCoroutine (WaitForRequest (www));
+		RandomMapMaker (5, 5);
 	}
 
 	void Update(){
@@ -40,6 +47,23 @@ public class GameManager : MonoBehaviour {
         {
             GameOverBox.SetActive(true);
         }
+	}
+
+	IEnumerator WaitForRequest(WWW www)
+	{
+		yield return www;
+
+		if (www.error == null) {
+			Debug.Log ("WWW OK!: " + www.data);
+			//JsonData json = JsonMapper.ToObject (www.data);
+		} else {
+			Debug.Log ("WWW ERROR!: " + www.error);
+		}
+	}
+
+	public void ServerMapMaker(int x, int y)
+	{
+
 	}
 
     public void RandomMapMaker(int x, int y)

@@ -2636,6 +2636,7 @@ MonoBehaviour:
   isGameClear: 0
   ClearBox: {fileID: 1478250578}
   GameOverBox: {fileID: 447016794}
+  server_url: 
 --- !u!4 &2028394696
 Transform:
   m_ObjectHideFlags: 0

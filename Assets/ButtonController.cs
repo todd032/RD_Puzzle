@@ -19,7 +19,7 @@ public class ButtonController : MonoBehaviour {
 
 	public void LoadInGame () {
 		Debug.Log ("LoadInGame");
-		Application.LoadLevel (2);
+		Application.LoadLevel ("InGame");
 	}
 
 	public void btn_yes(){
