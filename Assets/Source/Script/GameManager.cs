@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
     public GameObject GameOverBox;
 
 	public string server_url;
+	public bool game_start;
 
 	void Awake () {
         map = new GameObject[30, 30, 3];
@@ -31,7 +32,7 @@ public class GameManager : MonoBehaviour {
 
     void Start()
 	{
-		RandomMapMaker (5, 5);
+		game_start = false;
 		if (server_url == null || server_url == "") {
 			server_url = "http://bismute.xyz:3000";
 		}
@@ -59,8 +60,10 @@ public class GameManager : MonoBehaviour {
 			Debug.Log (data.ToString());
 			JsonData json = json_parser (data);
 			ServerMapMaker (json);
+			game_start = true;
 		} else {
 			Debug.Log ("WWW ERROR!: " + www.error);
+			RandomMapMaker (5, 5);
 		}
 	}
 

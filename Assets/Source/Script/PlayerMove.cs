@@ -220,46 +220,51 @@ public class PlayerMove : MonoBehaviour {
     int CheckCloseDirection(int dir)
     {
         int num = 0;
-        // Up
-        if(dir == 0)
-        {
-            if (mainCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
-                num++;
-            if (upCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
-                num++;
-            if (upCheck.wall.GetComponent<WallCtrl>().close)
-                num = 2;
-        }
-        // Down
-        else if(dir == 1)
-        {
-            if (mainCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
-                num++;
-            if (downCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
-                num++;
-            if (downCheck.wall.GetComponent<WallCtrl>().close)
-                num = 2;
-        }
-        // Left
-        else if(dir == 2)
-        {
-            if (mainCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
-                num++;
-            if (leftCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
-                num++;
-            if (leftCheck.wall.GetComponent<WallCtrl>().close)
-                num = 2;
-        }
-        // Right
-        else if(dir == 3)
-        {
-            if (mainCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
-                num++;
-            if (rightCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
-                num++;
-            if (rightCheck.wall.GetComponent<WallCtrl>().close)
-                num = 2;
-        }
+		try {
+	        // Up
+	        if(dir == 0)
+	        {
+	            if (mainCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
+	                num++;
+	            if (upCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
+	                num++;
+	            if (upCheck.wall.GetComponent<WallCtrl>().close)
+	                num = 2;
+	        }
+	        // Down
+	        else if(dir == 1)
+	        {
+	            if (mainCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
+	                num++;
+	            if (downCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
+	                num++;
+	            if (downCheck.wall.GetComponent<WallCtrl>().close)
+	                num = 2;
+	        }
+	        // Left
+	        else if(dir == 2)
+	        {
+	            if (mainCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
+	                num++;
+	            if (leftCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
+	                num++;
+	            if (leftCheck.wall.GetComponent<WallCtrl>().close)
+	                num = 2;
+	        }
+	        // Right
+	        else if(dir == 3)
+	        {
+	            if (mainCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
+	                num++;
+	            if (rightCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
+	                num++;
+	            if (rightCheck.wall.GetComponent<WallCtrl>().close)
+	                num = 2;
+	        }
+		}
+		catch {
+			num = 0;
+		}
 
         return num;
     }
