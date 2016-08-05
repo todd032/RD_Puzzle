@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using LitJson;
 
+
 public class GameManager : MonoBehaviour {
 
     public GameObject wall;
@@ -54,8 +55,14 @@ public class GameManager : MonoBehaviour {
 		yield return www;
 
 		if (www.error == null) {
-			Debug.Log ("WWW OK!: " + www.data);
-			//JsonData json = JsonMapper.ToObject (www.data);
+			string data = (string)www.text;
+			Debug.Log (data.ToString());
+			JsonData json = json_parser (data);
+			for (int i = 0; i < int.Parse (json["n"].ToString()); i++) {
+				for (int j = 0; j < int.Parse (json["m"].ToString()); j++) {
+					Debug.Log (json ["map"] [i] [j]);
+				}
+			}
 		} else {
 			Debug.Log ("WWW ERROR!: " + www.error);
 		}
@@ -115,4 +122,13 @@ public class GameManager : MonoBehaviour {
     {
         SceneManager.LoadScene("Menu");
     }
+
+	JsonData json_parser(string server_text)
+	{
+		server_text = server_text.Remove (0, 1);
+		server_text = server_text.Remove (server_text.Length - 1, 1);
+		server_text = server_text.Replace ("\\", "");
+		JsonData json = JsonMapper.ToObject (server_text);
+		return json;
+	}
 }
