@@ -72,14 +72,16 @@ public class GameManager : MonoBehaviour {
                 MovePlayer(dir, wall_num);
             }
         }
-
-        if (CheckGameClear())
+        if (game_start)
         {
-            ClearBox.SetActive(true);
-        }
-        else if (CheckGameOver())
-        {
-            GameOverBox.SetActive(true);
+            if (CheckGameClear())
+            {
+                ClearBox.SetActive(true);
+            }
+            else if (CheckGameOver())
+            {
+                GameOverBox.SetActive(true);
+            }
         }
     }
 
@@ -115,7 +117,7 @@ public class GameManager : MonoBehaviour {
 			for (int j = -1; j < y + 1; j++)
 			{
 				GameObject temp;
-				temp = Instantiate(wall, new Vector2(3 * i, 3 * -j), this.transform.rotation) as GameObject;
+				temp = Instantiate(wall, new Vector2(3 * j, 3 * -i), this.transform.rotation) as GameObject;
 				temp.transform.SetParent(parent.transform);
 
 				if (i == -1 || i == x)
@@ -136,7 +138,7 @@ public class GameManager : MonoBehaviour {
 					map_num /= 2;
 				}
 
-                map[i, j] = temp.GetComponent<WallCtrl>();
+                map[j, i] = temp.GetComponent<WallCtrl>();
 			}
 		}
 
