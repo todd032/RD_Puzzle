@@ -276,12 +276,26 @@ public class GameManager : MonoBehaviour {
         if (dir == 1)
         {
             player.MoveDown(wall_num);
+
+            if(wall_num == 1)
+            {
+                map[locX, locY].bw.SetActive(false);
+                map[locX, locY + 1].tw.SetActive(false);
+            }
+
             if (wall_num < 2)
                 locY++;
         }
         if (dir == 3)
         {
             player.MoveRight(wall_num);
+
+            if (wall_num == 1)
+            {
+                map[locX, locY].rw.SetActive(false);
+                map[locX + 1, locY].lw.SetActive(false);
+            }
+
             if (wall_num < 2)
                 locX++;
         }
