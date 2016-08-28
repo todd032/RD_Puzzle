@@ -5,29 +5,44 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using LitJson;
 
-
 public class GameManager : MonoBehaviour {
 
+    // Prefabs or Game Objects
     public GameObject wall;
     public GameObject parent;
     public GameObject checkPoint;
     public GameObject Cam;
-    public int stageSectorNum;
-    public int currSectorNum;
+    public PlayerMove player;
 
-    GameObject[,,] map;
-    public bool isGameOver;
-    public bool isGameClear;
-
+    // UI Game Objects
     public GameObject ClearBox;
     public GameObject GameOverBox;
 
 	public string server_url;
 	public bool game_start;
 
-	void Awake () {
-        map = new GameObject[30, 30, 3];
-        currSectorNum = 1;
+    // Input
+    public float swipeSensitivity;
+    public float earlyTouch;
+    public bool movefinished;
+    Vector2 firstPressPos;
+    Vector2 secondPressPos;
+    Vector2 currentSwipe;
+
+    int dir;
+    int wall_num;
+    float movingTime;
+
+
+    // Player location info & check game over or clear
+    WallCtrl[,] map;
+    int sizeX, sizeY;
+    int locX, locY;
+    public bool isGameOver;
+    public bool isGameClear;
+
+    void Awake () {
+        map = new WallCtrl[30, 30];
     }
 
     void Start()
@@ -38,18 +53,26 @@ public class GameManager : MonoBehaviour {
 		}
 		WWW www = new WWW (server_url);
 		StartCoroutine (WaitForRequest (www));
-	}
+
+        locX = 0;
+        locY = 0;
+        currentSwipe = Vector2.zero;
+        movefinished = true;
+    }
 
 	void Update(){
-        if (isGameClear)
+        movingTime -= Time.deltaTime;
+
+        if (movingTime < earlyTouch)
         {
-            ClearBox.SetActive(true);
+            if (ReadTouchInput())
+            {
+                dir = CheckDirection();
+                wall_num = CheckWallCheck(locX, locY, dir);
+                MovePlayer(dir, wall_num);
+            }
         }
-        else if (isGameOver)
-        {
-            GameOverBox.SetActive(true);
-        }
-	}
+    }
 
 	IEnumerator WaitForRequest(WWW www)
 	{
@@ -61,16 +84,22 @@ public class GameManager : MonoBehaviour {
 			JsonData json = json_parser (data);
 			ServerMapMaker (json);
 			game_start = true;
+
+            Debug.Log(map[0, 0]);
 		} else {
 			Debug.Log ("WWW ERROR!: " + www.error);
 			RandomMapMaker (5, 5);
+            game_start = true;
 		}
 	}
 
 	public void ServerMapMaker(JsonData json)
 	{
-		int x = int.Parse (json ["n"].ToString ());
-		int y = int.Parse (json ["m"].ToString ());
+        int x = int.Parse(json["n"].ToString());
+        int y = int.Parse(json["m"].ToString());
+
+        sizeX = x;
+        sizeY = y;
 
 		for (int i = -1; i < x + 1; i++)
 		{
@@ -92,12 +121,13 @@ public class GameManager : MonoBehaviour {
 				}
 
 				int map_num = int.Parse(json["map"][i][j].ToString());
-				string[] direction = new string[] {"RW", "LW", "BW", "TW"};
+                string[] direction = new string[] {"RW", "LW", "BW", "TW"};
 				for(int k = 0; k < 4; k++){
 					temp.transform.FindChild (direction [k]).gameObject.SetActive ((map_num % 2) == 1);	
 					map_num /= 2;
 				}
-				float a;
+
+                map[i, j] = temp.GetComponent<WallCtrl>();
 			}
 		}
 
@@ -154,4 +184,113 @@ public class GameManager : MonoBehaviour {
 		JsonData json = JsonMapper.ToObject (server_text);
 		return json;
 	}
+
+    bool ReadTouchInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            //save began touch 2d point
+            firstPressPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            //save ended touch 2d point
+            secondPressPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+
+            //create vector from the two points
+            currentSwipe = new Vector2(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
+        }
+
+        if (currentSwipe.magnitude > swipeSensitivity)
+        {
+            currentSwipe.Normalize();
+            return true;
+        }
+
+        return false;
+    }
+
+    int CheckDirection()
+    {
+        // Up
+        if (currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+        {
+           return 0;
+        }
+
+        // down
+        if (currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+        {
+            return 1;
+        }
+
+        // Left
+        if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+        {
+            return 2;
+        }
+
+        // Right
+        if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+        {
+            return 3;
+        }
+
+        return 4;
+    }
+
+    int CheckWallCheck(int x, int y, int dir)
+    {
+        int num = 0;
+
+        if (dir % 2 == 0)
+            return 0;
+
+        if (dir == 1)
+        {
+            if (y == sizeY - 1)
+                return 3;
+
+            if (map[x, y].bw.activeSelf)
+                num++;
+            if (map[x, y + 1].tw.activeSelf)
+                num++;
+        }
+        if (dir == 3)
+        {
+            if (x == sizeX - 1)
+                return 3;
+
+            if (map[x, y].rw.activeSelf)
+                num++;
+            if (map[x + 1, y].lw.activeSelf)
+                num++;
+        }
+
+        return num;
+    }
+
+    void MovePlayer(int dir, int wall_num)
+    {
+        if (dir == 1)
+        {
+            player.MoveDown(wall_num);
+            if (wall_num < 2)
+                locY++;
+        }
+        if (dir == 3)
+        {
+            player.MoveRight(wall_num);
+            if (wall_num < 2)
+                locX++;
+        }
+
+        if (wall_num == 0)
+            movingTime = player.normal;
+        if (wall_num == 1)
+            movingTime = player.oneBlocked;
+        if (wall_num > 1)
+            movingTime = player.twoBlocked;
+    }
 }
