@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour {
     public GameObject checkPoint;
     public GameObject Cam;
     public PlayerMove player;
-    public GameObject particle;
 
     // UI Game Objects
     public GameObject ClearBox;
@@ -72,6 +71,15 @@ public class GameManager : MonoBehaviour {
                 wall_num = CheckWallCheck(locX, locY, dir);
                 MovePlayer(dir, wall_num);
             }
+        }
+
+        if (CheckGameClear())
+        {
+            ClearBox.SetActive(true);
+        }
+        else if (CheckGameOver())
+        {
+            GameOverBox.SetActive(true);
         }
     }
 
@@ -307,5 +315,22 @@ public class GameManager : MonoBehaviour {
             movingTime = player.oneBlocked;
         if (wall_num > 1)
             movingTime = player.twoBlocked;
+    }
+
+    bool CheckGameOver()
+    {
+        if (locX != sizeX - 1 || locY != sizeY - 1)
+            if (CheckWallCheck(locX, locY, 1) > 1 && CheckWallCheck(locX, locY, 3) > 1)
+                return true;
+
+        return false;
+    }
+
+    bool CheckGameClear()
+    {
+        if (locX == sizeX - 1 && locY == sizeY - 1)
+            return true;
+
+        return false;
     }
 }

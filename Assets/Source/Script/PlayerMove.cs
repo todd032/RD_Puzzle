@@ -19,7 +19,7 @@ public class PlayerMove : MonoBehaviour {
 
     public void MoveDown(int wt)
     {
-       // PlaySound(wt);
+       PlaySound(wt);
 
         if (wt == 0)
         {
@@ -37,7 +37,7 @@ public class PlayerMove : MonoBehaviour {
 
     public void MoveRight(int wt)
     {
-        //PlaySound(wt);
+        PlaySound(wt);
 
         if (wt == 0)
         {
@@ -53,7 +53,6 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
-    /*
     void PlaySound(int wallType)
     {
         if (wallType == 0)
@@ -66,13 +65,12 @@ public class PlayerMove : MonoBehaviour {
             playerSound.clip = a_break;
             playerSound.Play();
         }
-        else if (wallType == 2)
+        else if (wallType > 1)
         {
             playerSound.clip = a_break;
             playerSound.Play();
         }
     }
-    */
 
     /*
     void Start () {
