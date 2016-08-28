@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
     public GameObject checkPoint;
     public GameObject Cam;
     public PlayerMove player;
+    public GameObject particle;
 
     // UI Game Objects
     public GameObject ClearBox;
@@ -279,8 +280,8 @@ public class GameManager : MonoBehaviour {
 
             if(wall_num == 1)
             {
-                map[locX, locY].bw.SetActive(false);
-                map[locX, locY + 1].tw.SetActive(false);
+                map[locX, locY].WallBreaking(1);
+                map[locX, locY + 1].WallBreaking(0);
             }
 
             if (wall_num < 2)
@@ -292,8 +293,8 @@ public class GameManager : MonoBehaviour {
 
             if (wall_num == 1)
             {
-                map[locX, locY].rw.SetActive(false);
-                map[locX + 1, locY].lw.SetActive(false);
+                map[locX, locY].WallBreaking(3);
+                map[locX + 1, locY].WallBreaking(2);
             }
 
             if (wall_num < 2)
