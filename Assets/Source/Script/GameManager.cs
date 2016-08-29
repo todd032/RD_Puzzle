@@ -200,7 +200,18 @@ public class GameManager : MonoBehaviour {
 
     public void ToMenu()
     {
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("StageSelect");
+    }
+
+    public void Retry()
+    {
+        SceneManager.LoadScene("InGame");
+    }
+
+    public void NextStage()
+    {
+        info.StageNum++;
+        SceneManager.LoadScene("InGame");
     }
 
 	JsonData json_parser(string server_text)

@@ -611,6 +611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StageNum: 0
+  ClearStageNumber: 12
 --- !u!4 &1855352206
 Transform:
   m_ObjectHideFlags: 0
