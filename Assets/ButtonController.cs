@@ -5,6 +5,7 @@ using System.Collections;
 public class ButtonController : MonoBehaviour {
     
 	public GameObject dia_quit;
+    public GameObject CreditBox;
     public InfoContainer info;
 	private bool isShowing;
 
@@ -52,4 +53,14 @@ public class ButtonController : MonoBehaviour {
 		isShowing = !isShowing;
 		dia_quit.SetActive (isShowing);
 	}
+
+    public void CreditOn()
+    {
+        CreditBox.SetActive(true);
+    }
+
+    public void CreditOff()
+    {
+        CreditBox.SetActive(false);
+    }
 }

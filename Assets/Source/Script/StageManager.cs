@@ -7,11 +7,11 @@ public class StageManager : MonoBehaviour {
     public Transform Canvas;
     public InfoContainer info;
     public GameObject Stagebtn;
-    public int totalStageNumber;
 
 	// Use this for initialization
 	void Start () {
         info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
+        int totalStageNumber = info.totalStageNumber;
 
         for (int i = 0; i < totalStageNumber; i++)
         {

@@ -5,6 +5,7 @@ public class InfoContainer : MonoBehaviour {
 
     public int StageNum;
     public int ClearStageNumber;
+    public int totalStageNumber;
 
 	void Awake()
     {

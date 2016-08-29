@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour {
     // UI Game Objects
     public GameObject ClearBox;
     public GameObject GameOverBox;
+    public GameObject PauseBox;
 
 	public string server_url;
 	public bool game_start;
@@ -42,6 +43,8 @@ public class GameManager : MonoBehaviour {
     int locX, locY;
     public bool isGameOver;
     public bool isGameClear;
+    public bool isPause;
+    float playtime;
 
     public JsonData temp;
 
@@ -54,6 +57,7 @@ public class GameManager : MonoBehaviour {
 	{
         stageNumber = info.StageNum;
 		game_start = false;
+        playtime = 0f;
 
         if (stageNumber == 0)
         {
@@ -79,6 +83,11 @@ public class GameManager : MonoBehaviour {
     }
 
 	void Update(){
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Pause();
+        }
+
         movingTime -= Time.deltaTime;
 
         if (movingTime < earlyTouch)
@@ -92,6 +101,11 @@ public class GameManager : MonoBehaviour {
         }
         if (game_start)
         {
+            if (!isPause)
+            {
+                playtime += Time.deltaTime;
+            }
+
             if (CheckGameClear())
             {
                 ClearBox.SetActive(true);
@@ -198,18 +212,36 @@ public class GameManager : MonoBehaviour {
         Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y, -10f);
     }
 
+    public void Pause()
+    {
+        isPause = true;
+        PauseBox.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void Resume()
+    {
+        isPause = false;
+        PauseBox.SetActive(false);
+        Time.timeScale = 1;
+    }
+
     public void ToMenu()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("StageSelect");
     }
 
     public void Retry()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("InGame");
     }
 
     public void NextStage()
     {
+        if (info.totalStageNumber == info.StageNum)
+            return;
         info.StageNum++;
         SceneManager.LoadScene("InGame");
     }

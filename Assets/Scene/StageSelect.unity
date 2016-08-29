@@ -118,7 +118,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -311, y: 536}
+  m_AnchoredPosition: {x: -311, y: 617.21}
   m_SizeDelta: {x: 107, y: 107}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &247326095
@@ -491,4 +491,3 @@ MonoBehaviour:
   Canvas: {fileID: 1813949531}
   info: {fileID: 0}
   Stagebtn: {fileID: 120554, guid: 336965a542aa68d4b8722e8e607ce23c, type: 2}
-  totalStageNumber: 12
