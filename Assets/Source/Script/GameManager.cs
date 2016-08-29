@@ -20,7 +20,12 @@ public class GameManager : MonoBehaviour {
     public GameObject GameOverBox;
     public GameObject PauseBox;
 
-	public string server_url;
+    public GameObject Tuto1;
+    public GameObject Tuto2;
+    public GameObject Tuto3;
+    public GameObject Tuto4;
+
+    public string server_url;
 	public bool game_start;
 
     // Input
@@ -34,7 +39,6 @@ public class GameManager : MonoBehaviour {
     int dir;
     int wall_num;
     float movingTime;
-
 
     // Player location info & check game over or clear
     public int stageNumber;
@@ -56,6 +60,7 @@ public class GameManager : MonoBehaviour {
     void Start()
 	{
         stageNumber = info.StageNum;
+        
 		game_start = false;
         playtime = 0f;
 
@@ -76,6 +81,7 @@ public class GameManager : MonoBehaviour {
             game_start = true;
         }
 
+        TutoOn();
         locX = 0;
         locY = 0;
         currentSwipe = Vector2.zero;
@@ -393,5 +399,20 @@ public class GameManager : MonoBehaviour {
             return true;
 
         return false;
+    }
+
+    void TutoOn()
+    {
+        if (stageNumber == 1)
+            Tuto1.SetActive(true);
+        else if (stageNumber == 2)
+        {
+            Tuto2.SetActive(true);
+            Cam.transform.position = new Vector3(1.0f, 0, 0) + Cam.transform.position;
+        }
+        else if (stageNumber == 3)
+            Tuto3.SetActive(true);
+        else if (stageNumber == 4)
+            Tuto4.SetActive(true);
     }
 }
