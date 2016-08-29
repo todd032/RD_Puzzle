@@ -125,8 +125,8 @@ public class GameManager : MonoBehaviour {
         int x = int.Parse(json["n"].ToString());
         int y = int.Parse(json["m"].ToString());
 
-        sizeX = x;
-        sizeY = y;
+        sizeX = y;
+        sizeY = x;
 
 		for (int i = -1; i < x + 1; i++)
 		{
@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour {
 		GameObject cp;
 		cp = Instantiate(checkPoint, new Vector2(3 * (x - 1), -3 * (y - 1)), this.transform.rotation) as GameObject;
 
-		Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y, -10f);
+		Cam.transform.position = new Vector3(1.5f * (y - 1), -1.5f * x, -10f);
 	}
 
     public void RandomMapMaker(int x, int y)
