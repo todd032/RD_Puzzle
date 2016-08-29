@@ -7,6 +7,9 @@ public class InfoContainer : MonoBehaviour {
     public int ClearStageNumber;
     public int totalStageNumber;
 
+	public float score;
+	public int combo;
+
 	void Awake()
     {
         DontDestroyOnLoad(gameObject);

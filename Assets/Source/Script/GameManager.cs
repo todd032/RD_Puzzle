@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -52,6 +53,15 @@ public class GameManager : MonoBehaviour {
 
     public JsonData temp;
 
+	// Score System
+	public Text txt_score;
+	public Text txt_combo;
+	public int score_lost_per_centi_sec;
+	public int score_smooth;
+	public int score_destruction;
+	public int score_stuck;
+	private float pre_lost_time;
+
     void Awake () {
         info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
         map = new WallCtrl[30, 30];
@@ -81,6 +91,7 @@ public class GameManager : MonoBehaviour {
             game_start = true;
         }
 
+		UpdateScore ();
         TutoOn();
         locX = 0;
         locY = 0;
@@ -105,16 +116,29 @@ public class GameManager : MonoBehaviour {
                 MovePlayer(dir, wall_num);
             }
         }
+
         if (game_start)
         {
             if (!isPause)
             {
                 playtime += Time.deltaTime;
-            }
+			}
+
+			if (Time.time - pre_lost_time > 0.1) {
+				pre_lost_time = Time.time;
+				info.score -= score_lost_per_centi_sec;
+				UpdateScore ();
+			}
 
             if (CheckGameClear())
             {
-                ClearBox.SetActive(true);
+				if (info.StageNum == 0)
+					SceneManager.LoadScene ("InGame");
+				else {
+					ClearBox.SetActive (true);
+					info.score = 0;
+					info.combo = 0;
+				}
             }
             else if (CheckGameOver())
             {
@@ -235,7 +259,10 @@ public class GameManager : MonoBehaviour {
     public void ToMenu()
     {
         Time.timeScale = 1;
-        SceneManager.LoadScene("StageSelect");
+		if(info.StageNum == 0)
+			SceneManager.LoadScene("Menu");
+		else
+        	SceneManager.LoadScene("StageSelect");
     }
 
     public void Retry()
@@ -376,13 +403,28 @@ public class GameManager : MonoBehaviour {
                 locX++;
         }
 
-        if (wall_num == 0)
-            movingTime = player.normal;
-        if (wall_num == 1)
-            movingTime = player.oneBlocked;
-        if (wall_num > 1)
-            movingTime = player.twoBlocked;
+		if (wall_num == 0) {
+			movingTime = player.normal;
+			info.combo++;
+			info.score += score_smooth * info.combo;
+		}
+		if (wall_num == 1) {
+			movingTime = player.oneBlocked;
+			info.score += score_destruction * info.combo;
+			info.combo = 0;
+		}
+		if (wall_num > 1) {
+			movingTime = player.twoBlocked;
+			info.score += score_stuck;
+			info.combo = 0;
+		}
+		UpdateScore ();
     }
+
+	void UpdateScore()
+	{
+		txt_score.text = "Score : " + ((int)info.score).ToString ();
+	}
 
     bool CheckGameOver()
     {
