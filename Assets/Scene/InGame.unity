@@ -4933,7 +4933,7 @@ GameObject:
   - 224: {fileID: 1917621829}
   - 222: {fileID: 1917621831}
   - 114: {fileID: 1917621830}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: txt_combo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4978,8 +4978,8 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 5a3382f6dbde4034390f1e6e11181132, type: 3}
-    m_FontSize: 70
+    m_Font: {fileID: 12800000, guid: 34db20eefcecabf4ea23762461d92084, type: 3}
+    m_FontSize: 100
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -5268,6 +5268,7 @@ MonoBehaviour:
   score_smooth: 10
   score_destruction: 20
   score_stuck: -10
+  combo_text_appear_time: 0.5
 --- !u!4 &2028394696
 Transform:
   m_ObjectHideFlags: 0

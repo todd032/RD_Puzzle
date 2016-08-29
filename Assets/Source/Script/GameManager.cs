@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour {
 	public int score_destruction;
 	public int score_stuck;
 	private float pre_lost_time;
+	private float pre_combo_time;
+	public float combo_text_appear_time;
 
     void Awake () {
         info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
@@ -130,6 +132,12 @@ public class GameManager : MonoBehaviour {
 				UpdateScore ();
 			}
 
+			if (txt_combo.text != "") {
+				if (Time.time - pre_combo_time > combo_text_appear_time) {
+					txt_combo.text = "";
+				}
+			}
+
             if (CheckGameClear())
             {
 				if (info.StageNum == 0)
@@ -139,10 +147,12 @@ public class GameManager : MonoBehaviour {
 					info.score = 0;
 					info.combo = 0;
 				}
+				game_start = false;
             }
             else if (CheckGameOver())
             {
                 GameOverBox.SetActive(true);
+				game_start = false;
             }
         }
     }
@@ -257,7 +267,9 @@ public class GameManager : MonoBehaviour {
     }
 
     public void ToMenu()
-    {
+	{
+		info.score = 0;
+		info.combo = 0;
         Time.timeScale = 1;
 		if(info.StageNum == 0)
 			SceneManager.LoadScene("Menu");
@@ -266,13 +278,17 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Retry()
-    {
+	{
+		info.score = 0;
+		info.combo = 0;
         Time.timeScale = 1;
         SceneManager.LoadScene("InGame");
     }
 
     public void NextStage()
-    {
+	{
+		info.score = 0;
+		info.combo = 0;
         if (info.totalStageNumber == info.StageNum)
             return;
         info.StageNum++;
@@ -406,6 +422,8 @@ public class GameManager : MonoBehaviour {
 		if (wall_num == 0) {
 			movingTime = player.normal;
 			info.combo++;
+			txt_combo.text = info.combo.ToString() + " Combo!";
+			pre_combo_time = Time.time;
 			info.score += score_smooth * info.combo;
 		}
 		if (wall_num == 1) {
