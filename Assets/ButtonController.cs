@@ -33,8 +33,7 @@ public class ButtonController : MonoBehaviour {
 
     public void stagebtn()
     {
-        info.StageNum = 1;
-        SceneManager.LoadScene("InGame");
+        SceneManager.LoadScene("StageSelect");
         //Application.LoadLevel("InGame");
     }
 
