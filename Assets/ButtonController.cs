@@ -1,9 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class ButtonController : MonoBehaviour {
+    
 	public GameObject dia_quit;
+    public InfoContainer info;
 	private bool isShowing;
+
+    void Awake()
+    {
+        info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
+    }
 
 	void Start(){
 		isShowing = false;
@@ -19,8 +27,23 @@ public class ButtonController : MonoBehaviour {
 
 	public void LoadInGame () {
 		Debug.Log ("LoadInGame");
-		Application.LoadLevel ("InGame");
-	}
+        SceneManager.LoadScene("InGame");
+        //Application.LoadLevel ("InGame");
+    }
+
+    public void stagebtn()
+    {
+        info.StageNum = 1;
+        SceneManager.LoadScene("InGame");
+        //Application.LoadLevel("InGame");
+    }
+
+    public void infinitebtn()
+    {
+        info.StageNum = 0;
+        SceneManager.LoadScene("InGame");
+        //Application.LoadLevel("InGame");
+    }
 
 	public void btn_yes(){
 		Application.Quit ();

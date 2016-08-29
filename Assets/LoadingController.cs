@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -20,7 +21,8 @@ public class LoadingController : MonoBehaviour {
 	void Update () {
 		timer += Time.deltaTime;
 		if (timer > 3 || Input.anyKey) {
-			Application.LoadLevel ("Menu");
+            SceneManager.LoadScene("Menu");
+			//Application.LoadLevel ("Menu");
 		}
 		if (timer <= 1 / fadeSpeed) {
 			FadeIn (timer * fadeSpeed);

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
     public GameObject checkPoint;
     public GameObject Cam;
     public PlayerMove player;
+    public InfoContainer info;
 
     // UI Game Objects
     public GameObject ClearBox;
@@ -35,24 +36,41 @@ public class GameManager : MonoBehaviour {
 
 
     // Player location info & check game over or clear
+    public int stageNumber;
     WallCtrl[,] map;
     int sizeX, sizeY;
     int locX, locY;
     public bool isGameOver;
     public bool isGameClear;
 
+    public JsonData temp;
+
     void Awake () {
+        info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
         map = new WallCtrl[30, 30];
     }
 
     void Start()
 	{
+        stageNumber = info.StageNum;
 		game_start = false;
-		if (server_url == null || server_url == "") {
-			server_url = "http://bismute.xyz:3000";
-		}
-		WWW www = new WWW (server_url);
-		StartCoroutine (WaitForRequest (www));
+
+        if (stageNumber == 0)
+        {
+            if (server_url == null || server_url == "")
+            {
+                server_url = "http://bismute.xyz:3000";
+            }
+            WWW www = new WWW(server_url);
+            StartCoroutine(WaitForRequest(www));
+        }
+        else
+        {
+            string md = Resources.Load("mapdata/stage" + stageNumber).ToString();
+            temp = json_parser(md);
+            ServerMapMaker(temp);
+            game_start = true;
+        }
 
         locX = 0;
         locY = 0;
@@ -95,8 +113,6 @@ public class GameManager : MonoBehaviour {
 			JsonData json = json_parser (data);
 			ServerMapMaker (json);
 			game_start = true;
-
-            Debug.Log(map[0, 0]);
 		} else {
 			Debug.Log ("WWW ERROR!: " + www.error);
 			RandomMapMaker (5, 5);

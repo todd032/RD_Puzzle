@@ -952,6 +952,7 @@ MonoBehaviour:
   checkPoint: {fileID: 173272, guid: 82280bac2f94c8848bf8709bf0c0c989, type: 2}
   Cam: {fileID: 96115177}
   player: {fileID: 908457369}
+  info: {fileID: 0}
   ClearBox: {fileID: 1478250578}
   GameOverBox: {fileID: 447016794}
   server_url: 
@@ -959,6 +960,7 @@ MonoBehaviour:
   swipeSensitivity: 60
   earlyTouch: 0
   movefinished: 0
+  stageNumber: 0
   isGameOver: 0
   isGameClear: 0
 --- !u!4 &2028394696
