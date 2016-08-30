@@ -112,7 +112,10 @@ public class GameManager : MonoBehaviour {
 	void Update(){
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Pause();
+            if (isGameOver || isGameClear)
+                ToMenu();
+            else
+                Pause();
         }
 
         movingTime -= Time.deltaTime;
@@ -148,6 +151,8 @@ public class GameManager : MonoBehaviour {
 
             if (CheckGameClear())
             {
+                isGameClear = true;
+
 				if (info.StageNum == 0)
 					SceneManager.LoadScene ("InGame");
 				else {
@@ -159,6 +164,8 @@ public class GameManager : MonoBehaviour {
             }
             else if (CheckGameOver())
             {
+                isGameOver = true;
+
                 GameOverBox.SetActive(true);
 				game_start = false;
             }
@@ -262,6 +269,9 @@ public class GameManager : MonoBehaviour {
 
     public void Pause()
     {
+        if (isGameClear || isGameOver)
+            return;
+
         isPause = true;
         PauseBox.SetActive(true);
         Time.timeScale = 0;
@@ -427,7 +437,7 @@ public class GameManager : MonoBehaviour {
                 locX++;
         }
 
-		if (wall_num == 0) {
+		if (wall_num == 0 && (dir == 1 || dir == 3)) {
 			movingTime = player.normal;
 			info.combo++;
 			txt_combo.text = info.combo.ToString() + " Combo!";
