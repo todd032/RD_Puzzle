@@ -2670,6 +2670,7 @@ GameObject:
   - 50: {fileID: 908457367}
   - 82: {fileID: 908457371}
   - 81: {fileID: 908457372}
+  - 61: {fileID: 908457368}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2695,6 +2696,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!61 &908457368
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 908457366}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 2.56, y: 2.56}
 --- !u!114 &908457369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6517,7 +6532,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wall: {fileID: 104490, guid: b9a1fa1c7efeaf44aba189cd20d0ce59, type: 2}
   parent: {fileID: 284304017}
-  checkPoint: {fileID: 173272, guid: 82280bac2f94c8848bf8709bf0c0c989, type: 2}
+  checkPoint: {fileID: 1000011773257912, guid: ef0bfef58c1d88a489279b3b5d21a53f, type: 2}
   Cam: {fileID: 96115177}
   player: {fileID: 908457369}
   info: {fileID: 0}
@@ -6541,9 +6556,9 @@ MonoBehaviour:
   txt_score: {fileID: 1470729565}
   txt_combo: {fileID: 1917621830}
   score_lost_per_centi_sec: 1
-  score_smooth: 10
-  score_destruction: 20
-  score_stuck: -10
+  score_smooth: 100
+  score_destruction: 200
+  score_stuck: -100
   combo_text_appear_time: 0.5
   maxComboC: {fileID: 571565510}
   playTimeC: {fileID: 1510477349}

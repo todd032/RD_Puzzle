@@ -163,8 +163,6 @@ public class GameManager : MonoBehaviour {
 
             if (CheckGameClear())
             {
-                isGameClear = true;
-                
                 if (info.ClearStageNumber == stageNumber)
                     info.ClearStageNumber++;
 				if (info.StageNum == 0)
@@ -215,7 +213,7 @@ public class GameManager : MonoBehaviour {
         sizeX = y;
         sizeY = x;
 
-		for (int i = -1; i < x + 1; i++)
+        for (int i = -1; i < x + 1; i++)
 		{
 			for (int j = -1; j < y + 1; j++)
 			{
@@ -246,7 +244,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 		GameObject cp;
-		cp = Instantiate(checkPoint, new Vector2(3 * (x - 1), -3 * (y - 1)), this.transform.rotation) as GameObject;
+		cp = Instantiate(checkPoint, new Vector2(3 * (y - 1), -3 * (x - 1)), this.transform.rotation) as GameObject;
 
 		Cam.transform.position = new Vector3(1.5f * (y - 1), -1.5f * x, -10f);
 	}
@@ -341,6 +339,9 @@ public class GameManager : MonoBehaviour {
 
     bool ReadTouchInput()
     {
+        if (isGameClear || isGameOver)
+            return false;
+
         if (Input.GetMouseButtonDown(0))
         {
             //save began touch 2d point
@@ -494,7 +495,7 @@ public class GameManager : MonoBehaviour {
 
     bool CheckGameClear()
     {
-        if (locX == sizeX - 1 && locY == sizeY - 1)
+        if (isGameClear)
             return true;
 
         return false;
