@@ -71,10 +71,13 @@ public class GameManager : MonoBehaviour {
     public Text playTimeC;
     public Text scoreC;
     public Text bestScoreC;
+    public GameObject newC;
+
     public Text maxComboO;
     public Text playTimeO;
     public Text scoreO;
     public Text bestScoreO;
+    public GameObject newO;
 
 
     void Awake () {
@@ -169,8 +172,20 @@ public class GameManager : MonoBehaviour {
 					SceneManager.LoadScene ("InGame");
 				else {
 					ClearBox.SetActive (true);
+                    if (info.score > info.BestScore[stageNumber - 1])
+                    {
+                        newC.SetActive(true);
+                        info.BestScore[stageNumber - 1] = (int)info.score;
+                    }
+
+                    maxComboC.text = info.maxCombo.ToString();
+                    scoreC.text = info.score.ToString();
+                    playTimeC.text = playtime.ToString();
+                    bestScoreC.text = info.BestScore[stageNumber - 1].ToString();
+
 					info.score = 0;
 					info.combo = 0;
+                    info.maxCombo = 0;
 				}
 
                 if (stageNumber == info.totalStageNumber)
@@ -183,7 +198,28 @@ public class GameManager : MonoBehaviour {
                 isGameOver = true;
 
                 GameOverBox.SetActive(true);
-				game_start = false;
+                if (stageNumber > 0 && info.score > info.BestScore[stageNumber])
+                {
+                    newO.SetActive(true);
+                    info.BestScore[stageNumber] = (int)info.score;
+                    bestScoreO.text = info.BestScore[stageNumber].ToString();
+                }
+                else if(stageNumber == 0 && info.score > info.BestScore[0])
+                {
+                    newO.SetActive(true);
+                    info.BestScore[0] = (int)info.score;
+                    bestScoreO.text = info.BestScore[0].ToString();
+                }
+
+                maxComboO.text = info.maxCombo.ToString();
+                scoreO.text = info.score.ToString();
+                playTimeO.text = playtime.ToString();
+
+                info.score = 0;
+                info.combo = 0;
+                info.maxCombo = 0;
+
+                game_start = false;
             }
         }
     }
@@ -304,6 +340,7 @@ public class GameManager : MonoBehaviour {
 	{
 		info.score = 0;
 		info.combo = 0;
+        info.maxCombo = 0;
         Time.timeScale = 1;
 		if(info.StageNum == 0)
 			SceneManager.LoadScene("Menu");
@@ -315,6 +352,7 @@ public class GameManager : MonoBehaviour {
 	{
 		info.score = 0;
 		info.combo = 0;
+        info.maxCombo = 0;
         Time.timeScale = 1;
         SceneManager.LoadScene("InGame");
     }
@@ -323,6 +361,7 @@ public class GameManager : MonoBehaviour {
 	{
 		info.score = 0;
 		info.combo = 0;
+        info.maxCombo = 0;
 
         info.StageNum++;
         SceneManager.LoadScene("InGame");
@@ -476,7 +515,7 @@ public class GameManager : MonoBehaviour {
 		UpdateScore ();
 
         if (info.combo > info.maxCombo)
-            info.combo = info.maxCombo;
+            info.maxCombo = info.combo;
     }
 
 	void UpdateScore()

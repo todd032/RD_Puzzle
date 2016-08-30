@@ -18,7 +18,7 @@ public class InfoContainer : MonoBehaviour {
 	void Awake()
     {
         if (!notFirstSceneCheck)
-            BestScore = new int[totalStageNumber];
+            BestScore = new int[totalStageNumber+1];
 
         notFirstSceneCheck = true;
         DontDestroyOnLoad(gameObject);
