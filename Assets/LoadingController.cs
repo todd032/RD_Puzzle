@@ -34,7 +34,12 @@ public class LoadingController : MonoBehaviour {
 		if (timer <= 1 / fadeSpeed) {
 			FadeIn (timer * fadeSpeed);
 		}
-	}
+
+        if (timer >= (3 - 1) / fadeSpeed)
+        {
+            FadeIn((3 - timer) * fadeSpeed);
+        }
+    }
 
 	void Clear() {
 		Debug.Log ("Clear Called");

@@ -249,7 +249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startColor: {r: 1, g: 1, b: 1, a: 0}
   EndColor: {r: 0.9411765, g: 0.9411765, b: 0.9411765, a: 1}
-  fadeSpeed: 0.5
+  fadeSpeed: 1
   text: {fileID: 808585503}
   image1: {fileID: 901224812}
   image2: {fileID: 1144531}
