@@ -50,7 +50,12 @@ public class GameManager : MonoBehaviour {
     public bool isGameOver;
     public bool isGameClear;
     public bool isPause;
-    float playtime;
+    public float RemainTimeStart;
+    public float additionalTime;
+    public GameObject Timer;
+    Slider timerSlider;
+    public Text TimerText;
+    float timeLeft;
 
     public JsonData temp;
 
@@ -90,7 +95,6 @@ public class GameManager : MonoBehaviour {
         stageNumber = info.StageNum;
         
 		game_start = false;
-        playtime = 0f;
 
         if (stageNumber == 0)
         {
@@ -122,6 +126,16 @@ public class GameManager : MonoBehaviour {
         locY = 0;
         currentSwipe = Vector2.zero;
         movefinished = true;
+        timerSlider = Timer.GetComponent<Slider>();
+        if (stageNumber == 0)
+        {
+            Timer.SetActive(true);
+
+            if (info.infiniteTimeLeft == -1f)
+            {
+                info.infiniteTimeLeft = RemainTimeStart;
+            }
+        }
     }
 
 	void Update(){
@@ -153,10 +167,15 @@ public class GameManager : MonoBehaviour {
 
         if (game_start)
         {
+            if (info.infiniteTimeLeft > -0.5)
+                info.infiniteTimeLeft -= Time.deltaTime;
+            TimerText.text = ((int)info.infiniteTimeLeft).ToString();
+            timerSlider.value = info.infiniteTimeLeft / RemainTimeStart;
+
             if (!isPause)
             {
-                playtime += Time.deltaTime;
-			}
+                info.playtime += Time.deltaTime;
+            }
 
 			if (Time.time - pre_lost_time > 0.1) {
 				pre_lost_time = Time.time;
@@ -168,10 +187,14 @@ public class GameManager : MonoBehaviour {
             {
                 if (info.ClearStageNumber == stageNumber)
                     info.ClearStageNumber++;
-				if (info.StageNum == 0)
-					SceneManager.LoadScene ("InGame");
-				else {
-					ClearBox.SetActive (true);
+                if (info.StageNum == 0)
+                {
+                    info.infiniteTimeLeft += additionalTime;
+                    SceneManager.LoadScene("InGame");
+                }
+                else
+                {
+                    ClearBox.SetActive(true);
                     if (info.score > info.BestScore[stageNumber - 1])
                     {
                         newC.SetActive(true);
@@ -180,13 +203,14 @@ public class GameManager : MonoBehaviour {
 
                     maxComboC.text = info.maxCombo.ToString();
                     scoreC.text = info.score.ToString();
-                    playTimeC.text = playtime.ToString();
+                    playTimeC.text = info.playtime.ToString();
                     bestScoreC.text = info.BestScore[stageNumber - 1].ToString();
 
-					info.score = 0;
-					info.combo = 0;
+                    info.score = 0;
+                    info.combo = 0;
+                    info.playtime = 0;
                     info.maxCombo = 0;
-				}
+                }
 
                 if (stageNumber == info.totalStageNumber)
                     nextStagebtn.SetActive(false);
@@ -213,11 +237,13 @@ public class GameManager : MonoBehaviour {
 
                 maxComboO.text = info.maxCombo.ToString();
                 scoreO.text = info.score.ToString();
-                playTimeO.text = playtime.ToString();
+                playTimeO.text = info.playtime.ToString();
 
                 info.score = 0;
+                info.playtime = 0;
                 info.combo = 0;
                 info.maxCombo = 0;
+                info.infiniteTimeLeft = -1f;
 
                 game_start = false;
             }
@@ -282,7 +308,9 @@ public class GameManager : MonoBehaviour {
 		GameObject cp;
 		cp = Instantiate(checkPoint, new Vector2(3 * (y - 1), -3 * (x - 1)), this.transform.rotation) as GameObject;
 
-		Cam.transform.position = new Vector3(1.5f * (y - 1), -1.5f * x, -10f);
+		Cam.transform.position = new Vector3(1.5f * (y - 1), -1.5f * x + 0.5f, -10f);
+        if (stageNumber == 0)
+            Cam.transform.position += new Vector3(0f, 2f, 0f);
 	}
 
     public void RandomMapMaker(int x, int y)
@@ -316,7 +344,7 @@ public class GameManager : MonoBehaviour {
         GameObject cp;
         cp = Instantiate(checkPoint, new Vector2(3 * (x - 1), -3 * (y - 1)), this.transform.rotation) as GameObject;
 
-        Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y, -10f);
+        Cam.transform.position = new Vector3(1.5f * (x - 1), -1.5f * y - 4f, -10f);
     }
 
     public void Pause()
@@ -340,18 +368,24 @@ public class GameManager : MonoBehaviour {
 	{
 		info.score = 0;
 		info.combo = 0;
+        info.playtime = 0;
         info.maxCombo = 0;
         Time.timeScale = 1;
-		if(info.StageNum == 0)
-			SceneManager.LoadScene("Menu");
-		else
-        	SceneManager.LoadScene("StageSelect");
+
+        if (info.StageNum == 0)
+        {
+            SceneManager.LoadScene("Menu");
+            info.infiniteTimeLeft = -1;
+        }
+        else
+            SceneManager.LoadScene("StageSelect");
     }
 
     public void Retry()
 	{
 		info.score = 0;
 		info.combo = 0;
+        info.playtime = 0;
         info.maxCombo = 0;
         Time.timeScale = 1;
         SceneManager.LoadScene("InGame");
@@ -361,6 +395,7 @@ public class GameManager : MonoBehaviour {
 	{
 		info.score = 0;
 		info.combo = 0;
+        info.playtime = 0;
         info.maxCombo = 0;
 
         info.StageNum++;
