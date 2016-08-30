@@ -19,6 +19,16 @@ public class ButtonController : MonoBehaviour {
     }
 
 	void Start(){
+        if (info.musicOff)
+        {
+            SoundOnBtn.SetActive(false);
+            SoundOffBtn.SetActive(true);
+        }
+        else
+        {
+            SoundOffBtn.SetActive(false);
+            SoundOnBtn.SetActive(true);
+        }
 		isShowing = false;
 		dia_quit.SetActive (isShowing);
 	}
@@ -89,7 +99,7 @@ public class ButtonController : MonoBehaviour {
 
     public void SoundOn()
     {
-        info.musicOff = true;
+        info.musicOff = false;
         SoundOnBtn.SetActive(true);
         SoundOffBtn.SetActive(false);
     }
