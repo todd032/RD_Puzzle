@@ -6,6 +6,10 @@ public class ButtonController : MonoBehaviour {
     
 	public GameObject dia_quit;
     public GameObject CreditBox;
+    public GameObject SettingBox;
+    public GameObject SettingOutside;
+    public GameObject SoundOnBtn;
+    public GameObject SoundOffBtn;
     public InfoContainer info;
 	private bool isShowing;
 
@@ -62,5 +66,31 @@ public class ButtonController : MonoBehaviour {
     public void CreditOff()
     {
         CreditBox.SetActive(false);
+    }
+
+    public void SettingOn()
+    {
+        SettingBox.SetActive(true);
+        SettingOutside.SetActive(true);
+    }
+
+    public void SettingOff()
+    {
+        SettingBox.SetActive(false);
+        SettingOutside.SetActive(false);
+    }
+
+    public void SoundOff()
+    {
+        info.musicOff = true;
+        SoundOffBtn.SetActive(true);
+        SoundOnBtn.SetActive(false);
+    }
+
+    public void SoundOn()
+    {
+        info.musicOff = true;
+        SoundOnBtn.SetActive(true);
+        SoundOffBtn.SetActive(false);
     }
 }

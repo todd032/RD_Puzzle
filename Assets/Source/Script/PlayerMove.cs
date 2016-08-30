@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlayerMove : MonoBehaviour {
 
+    public bool musicOff;
     public AudioClip a_move;
     public AudioClip a_break;
     private AudioSource playerSound;
@@ -19,7 +20,8 @@ public class PlayerMove : MonoBehaviour {
 
     public void MoveDown(int wt)
     {
-       PlaySound(wt);
+        if (!musicOff)
+            PlaySound(wt);
 
         if (wt == 0)
         {
@@ -37,7 +39,8 @@ public class PlayerMove : MonoBehaviour {
 
     public void MoveRight(int wt)
     {
-        PlaySound(wt);
+        if (!musicOff)
+            PlaySound(wt);
 
         if (wt == 0)
         {

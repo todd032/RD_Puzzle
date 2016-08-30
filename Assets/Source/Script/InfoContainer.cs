@@ -13,6 +13,7 @@ public class InfoContainer : MonoBehaviour {
     public float playtime;
 	public int combo;
     public int maxCombo;
+    public bool musicOff;
 
     public int[] BestScore;
     bool notFirstSceneCheck;

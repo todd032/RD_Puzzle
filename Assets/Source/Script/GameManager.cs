@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour {
 
     void Start()
 	{
+        player.musicOff = info.musicOff;
         stageNumber = info.StageNum;
 		game_start = false;
 
@@ -214,7 +215,7 @@ public class GameManager : MonoBehaviour {
 
                     maxComboC.text = info.maxCombo.ToString();
                     scoreC.text = info.score.ToString();
-                    playTimeC.text = info.playtime.ToString();
+                    playTimeC.text = string.Format("{0:f1}", info.playtime);
                     bestScoreC.text = info.BestScore[stageNumber - 1].ToString();
 
                     info.score = 0;
@@ -248,7 +249,7 @@ public class GameManager : MonoBehaviour {
 
                 maxComboO.text = info.maxCombo.ToString();
                 scoreO.text = info.score.ToString();
-                playTimeO.text = info.playtime.ToString();
+                playTimeO.text = string.Format("{0:f1}", info.playtime);
 
                 info.score = 0;
                 info.playtime = 0;
@@ -556,7 +557,7 @@ public class GameManager : MonoBehaviour {
 		}
 		if (wall_num == 1) {
 			movingTime = player.oneBlocked;
-			info.score += score_destruction * info.combo;
+			info.score += score_destruction;
             pre_combo_time = Time.time;
             if (info.combo > 1)
                 txt_combo.text = "Break";
