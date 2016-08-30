@@ -15,7 +15,7 @@ TagManager:
   - 
   - 
   - Wall
-  - 
+  - front_canvas
   - 
   - 
   - 
@@ -39,6 +39,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: front_canvas
+    uniqueID: 1870636725
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

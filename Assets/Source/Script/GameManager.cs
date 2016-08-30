@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour {
 	private float pre_lost_time;
 	private float pre_combo_time;
 	public float combo_text_appear_time;
+	private Color[] pallet = new Color[6];
 
     void Awake () {
         info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
@@ -93,6 +94,13 @@ public class GameManager : MonoBehaviour {
             game_start = true;
         }
 
+		pallet[0] = Color.red;
+		pallet[1] = Color.magenta;
+		pallet[2] = Color.yellow;
+		pallet[3] = Color.green;
+		pallet[4] = Color.blue;
+		pallet[5] = Color.cyan;
+
 		UpdateScore ();
         TutoOn();
         locX = 0;
@@ -118,6 +126,12 @@ public class GameManager : MonoBehaviour {
                 MovePlayer(dir, wall_num);
             }
         }
+			
+		if (txt_combo.text != "") {
+			if (Time.time - pre_combo_time > combo_text_appear_time) {
+				txt_combo.text = "";
+			}
+		}
 
         if (game_start)
         {
@@ -130,12 +144,6 @@ public class GameManager : MonoBehaviour {
 				pre_lost_time = Time.time;
 				info.score -= score_lost_per_centi_sec;
 				UpdateScore ();
-			}
-
-			if (txt_combo.text != "") {
-				if (Time.time - pre_combo_time > combo_text_appear_time) {
-					txt_combo.text = "";
-				}
 			}
 
             if (CheckGameClear())
@@ -423,6 +431,7 @@ public class GameManager : MonoBehaviour {
 			movingTime = player.normal;
 			info.combo++;
 			txt_combo.text = info.combo.ToString() + " Combo!";
+			txt_combo.color = pallet [info.combo % pallet.Length];
 			pre_combo_time = Time.time;
 			info.score += score_smooth * info.combo;
 		}
