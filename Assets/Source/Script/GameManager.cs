@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour {
     public GameObject Tuto2;
     public GameObject Tuto3;
     public GameObject Tuto4;
+    public GameObject nextStagebtn;
 
     public string server_url;
 	public bool game_start;
@@ -64,6 +65,17 @@ public class GameManager : MonoBehaviour {
 	private float pre_combo_time;
 	public float combo_text_appear_time;
 	private Color[] pallet = new Color[6];
+
+    // Result 
+    public Text maxComboC;
+    public Text playTimeC;
+    public Text scoreC;
+    public Text bestScoreC;
+    public Text maxComboO;
+    public Text playTimeO;
+    public Text scoreO;
+    public Text bestScoreO;
+
 
     void Awake () {
         info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
@@ -152,7 +164,9 @@ public class GameManager : MonoBehaviour {
             if (CheckGameClear())
             {
                 isGameClear = true;
-
+                
+                if (info.ClearStageNumber == stageNumber)
+                    info.ClearStageNumber++;
 				if (info.StageNum == 0)
 					SceneManager.LoadScene ("InGame");
 				else {
@@ -160,7 +174,11 @@ public class GameManager : MonoBehaviour {
 					info.score = 0;
 					info.combo = 0;
 				}
-				game_start = false;
+
+                if (stageNumber == info.totalStageNumber)
+                    nextStagebtn.SetActive(false);
+
+                game_start = false;
             }
             else if (CheckGameOver())
             {
@@ -307,8 +325,7 @@ public class GameManager : MonoBehaviour {
 	{
 		info.score = 0;
 		info.combo = 0;
-        if (info.totalStageNumber == info.StageNum)
-            return;
+
         info.StageNum++;
         SceneManager.LoadScene("InGame");
     }
@@ -437,7 +454,7 @@ public class GameManager : MonoBehaviour {
                 locX++;
         }
 
-		if (wall_num == 0 && (dir == 1 || dir == 3)) {
+        if (wall_num == 0 && (dir == 1 || dir == 3)) {
 			movingTime = player.normal;
 			info.combo++;
 			txt_combo.text = info.combo.ToString() + " Combo!";
@@ -456,6 +473,9 @@ public class GameManager : MonoBehaviour {
 			info.combo = 0;
 		}
 		UpdateScore ();
+
+        if (info.combo > info.maxCombo)
+            info.combo = info.maxCombo;
     }
 
 	void UpdateScore()

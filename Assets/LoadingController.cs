@@ -6,10 +6,14 @@ using UnityEngine.UI;
 public class LoadingController : MonoBehaviour {
 	private float timer;
 
+    public Color startColor;
+    public Color EndColor;
+
 	public float fadeSpeed;
 	public Text text;
 	public Image image1;
 	public Image image2;
+    public Camera Cam;
 
 	// Use this for initialization
 	void Start () {
@@ -20,7 +24,10 @@ public class LoadingController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		timer += Time.deltaTime;
-		if (timer > 3 || Input.anyKey) {
+
+        Cam.backgroundColor = Color.Lerp(startColor, EndColor, timer);
+
+        if (timer > 3 || Input.anyKey) {
             SceneManager.LoadScene("Menu");
 			//Application.LoadLevel ("Menu");
 		}

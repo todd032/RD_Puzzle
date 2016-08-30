@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class InfoContainer : MonoBehaviour {
@@ -9,19 +10,17 @@ public class InfoContainer : MonoBehaviour {
 
 	public float score;
 	public int combo;
+    public int maxCombo;
+
+    public int[] BestScore;
+    bool notFirstSceneCheck;
 
 	void Awake()
     {
+        if (!notFirstSceneCheck)
+            BestScore = new int[totalStageNumber];
+
+        notFirstSceneCheck = true;
         DontDestroyOnLoad(gameObject);
-    }
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
     }
 }
