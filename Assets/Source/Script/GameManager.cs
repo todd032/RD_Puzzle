@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
     public GameObject wall;
     public GameObject parent;
     public GameObject checkPoint;
+    public GameObject addScoreItem;
     public GameObject Cam;
     public PlayerMove player;
     public InfoContainer info;
@@ -312,6 +313,11 @@ public class GameManager : MonoBehaviour {
 					temp.transform.FindChild (direction [k]).gameObject.SetActive ((map_num % 2) == 1);	
 					map_num /= 2;
 				}
+                if(map_num%2 == 1)
+                {
+                    GameObject item_score;
+                    item_score = Instantiate(addScoreItem, temp.transform.position, temp.transform.rotation) as GameObject;
+                }
 
                 map[j, i] = temp.GetComponent<WallCtrl>();
 			}
