@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour {
     public bool isPause;
     public float RemainTimeStart;
     public float additionalTime;
+    public float comboBreakTime;
     public GameObject Timer;
     Slider timerSlider;
     public Text TimerText;
@@ -84,6 +85,7 @@ public class GameManager : MonoBehaviour {
     public Text bestScoreO;
     public GameObject newO;
 
+    public float tempt;
 
     void Awake () {
         info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
@@ -93,7 +95,6 @@ public class GameManager : MonoBehaviour {
     void Start()
 	{
         stageNumber = info.StageNum;
-        
 		game_start = false;
 
         if (stageNumber == 0)
@@ -136,9 +137,12 @@ public class GameManager : MonoBehaviour {
                 info.infiniteTimeLeft = RemainTimeStart;
             }
         }
+
+        pre_combo_time = Time.time;
     }
 
 	void Update(){
+        tempt = Time.time - pre_combo_time;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isGameOver || isGameClear)
@@ -164,6 +168,14 @@ public class GameManager : MonoBehaviour {
 				txt_combo.text = "";
 			}
 		}
+
+        if(info.combo > 2 && Time.time - pre_combo_time > comboBreakTime && game_start)
+        {
+            pre_combo_time = Time.time;
+            txt_combo.text = "Break";
+            txt_combo.color = Color.black;
+            info.combo = 0;
+        }
 
         if (game_start)
         {
@@ -532,7 +544,8 @@ public class GameManager : MonoBehaviour {
         if (wall_num == 0 && (dir == 1 || dir == 3)) {
 			movingTime = player.normal;
 			info.combo++;
-			txt_combo.text = info.combo.ToString() + " Combo!";
+            if (info.combo > 1)
+                txt_combo.text = info.combo.ToString() + " Combo!";
 			txt_combo.color = pallet [info.combo % pallet.Length];
 			pre_combo_time = Time.time;
 			info.score += score_smooth * info.combo;
@@ -540,12 +553,20 @@ public class GameManager : MonoBehaviour {
 		if (wall_num == 1) {
 			movingTime = player.oneBlocked;
 			info.score += score_destruction * info.combo;
-			info.combo = 0;
+            pre_combo_time = Time.time;
+            if (info.combo > 1)
+                txt_combo.text = "Break";
+            txt_combo.color = Color.black;
+            info.combo = 0;
 		}
 		if (wall_num > 1) {
 			movingTime = player.twoBlocked;
 			info.score += score_stuck;
-			info.combo = 0;
+            pre_combo_time = Time.time;
+            if (info.combo > 1)
+            txt_combo.text = "Break";
+            txt_combo.color = Color.black;
+            info.combo = 0;
 		}
 		UpdateScore ();
 
@@ -562,6 +583,10 @@ public class GameManager : MonoBehaviour {
     {
         if (locX != sizeX - 1 || locY != sizeY - 1)
             if (CheckWallCheck(locX, locY, 1) > 1 && CheckWallCheck(locX, locY, 3) > 1)
+                return true;
+
+        if (stageNumber == 0)
+            if (info.infiniteTimeLeft < 0)
                 return true;
 
         return false;

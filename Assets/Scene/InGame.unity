@@ -7094,6 +7094,7 @@ MonoBehaviour:
   isPause: 0
   RemainTimeStart: 30
   additionalTime: 5
+  comboBreakTime: 2
   Timer: {fileID: 855100804}
   TimerText: {fileID: 1426405200}
   txt_score: {fileID: 1470729565}

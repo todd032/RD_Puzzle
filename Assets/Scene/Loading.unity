@@ -623,6 +623,7 @@ MonoBehaviour:
   totalStageNumber: 12
   infiniteTimeLeft: -1
   score: 0
+  playtime: 0
   combo: 0
   maxCombo: 0
   BestScore: 
