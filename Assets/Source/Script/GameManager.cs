@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour {
     public GameObject Tuto2;
     public GameObject Tuto3;
     public GameObject Tuto4;
+    public GameObject Tuto5;
     public GameObject nextStagebtn;
 
     public string server_url;
@@ -86,8 +87,6 @@ public class GameManager : MonoBehaviour {
     public Text bestScoreO;
     public GameObject newO;
 
-    public float tempt;
-
     void Awake () {
         info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
         map = new WallCtrl[30, 30];
@@ -143,7 +142,6 @@ public class GameManager : MonoBehaviour {
     }
 
 	void Update(){
-        tempt = Time.time - pre_combo_time;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isGameOver || isGameClear)
@@ -619,5 +617,7 @@ public class GameManager : MonoBehaviour {
             Tuto3.SetActive(true);
         else if (stageNumber == 4)
             Tuto4.SetActive(true);
+        else if (stageNumber == 5)
+            Tuto5.SetActive(true);
     }
 }
