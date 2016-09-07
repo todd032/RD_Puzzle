@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour {
 
     void Start()
 	{
+
         player.musicOff = info.musicOff;
         stageNumber = info.StageNum;
 		game_start = false;
@@ -169,7 +170,7 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-        if(info.combo > 2 && Time.time - pre_combo_time > comboBreakTime && game_start)
+        if(info.combo > 1 && Time.time - pre_combo_time > comboBreakTime && game_start)
         {
             pre_combo_time = Time.time;
             txt_combo.text = "Break";
