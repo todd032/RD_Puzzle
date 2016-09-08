@@ -87,6 +87,9 @@ public class GameManager : MonoBehaviour {
     public Text bestScoreO;
     public GameObject newO;
 
+	// Ads
+	MoneyMoney haedomoney;
+
     void Awake () {
         info = GameObject.Find("InfoContainer").GetComponent<InfoContainer>();
         map = new WallCtrl[30, 30];
@@ -141,6 +144,7 @@ public class GameManager : MonoBehaviour {
         }
 
         pre_combo_time = Time.time;
+		haedomoney = new MoneyMoney ();
     }
 
 	void Update(){
@@ -390,6 +394,8 @@ public class GameManager : MonoBehaviour {
         info.maxCombo = 0;
         Time.timeScale = 1;
 
+		haedomoney.ShowRewardedAd ();
+
         if (info.StageNum == 0)
         {
             SceneManager.LoadScene("Menu");
@@ -401,11 +407,17 @@ public class GameManager : MonoBehaviour {
 
     public void Retry()
 	{
+		float score = info.score;
+
 		info.score = 0;
 		info.combo = 0;
         info.playtime = 0;
         info.maxCombo = 0;
         Time.timeScale = 1;
+
+		if(score > 10000)
+			haedomoney.ShowRewardedAd ();
+
         SceneManager.LoadScene("InGame");
     }
 
@@ -415,6 +427,9 @@ public class GameManager : MonoBehaviour {
 		info.combo = 0;
         info.playtime = 0;
         info.maxCombo = 0;
+
+		if (info.StageNum % 3 == 0)
+			haedomoney.ShowRewardedAd ();
 
         info.StageNum++;
         SceneManager.LoadScene("InGame");
