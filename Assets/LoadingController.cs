@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
 
 public class LoadingController : MonoBehaviour {
 	private float timer;
 
+    public Color startColor;
+    public Color EndColor;
+
 	public float fadeSpeed;
 	public Text text;
 	public Image image1;
 	public Image image2;
+    public Camera Cam;
 
 	// Use this for initialization
 	void Start () {
@@ -19,13 +24,22 @@ public class LoadingController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		timer += Time.deltaTime;
-		if (timer > 3 || Input.anyKey) {
-			Application.LoadLevel (1);
+
+        Cam.backgroundColor = Color.Lerp(startColor, EndColor, timer);
+
+        if (timer > 3 || Input.anyKey) {
+            SceneManager.LoadScene("Menu");
+			//Application.LoadLevel ("Menu");
 		}
 		if (timer <= 1 / fadeSpeed) {
 			FadeIn (timer * fadeSpeed);
 		}
-	}
+
+        if (timer >= (3 - 1) / fadeSpeed)
+        {
+            FadeIn((3 - timer) * fadeSpeed);
+        }
+    }
 
 	void Clear() {
 		Debug.Log ("Clear Called");

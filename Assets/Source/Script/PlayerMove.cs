@@ -3,51 +3,79 @@ using System.Collections;
 
 public class PlayerMove : MonoBehaviour {
 
+    public bool musicOff;
     public AudioClip a_move;
     public AudioClip a_break;
     private AudioSource playerSound;
 
+    // player Moving time
     public float normal;
     public float oneBlocked;
     public float twoBlocked;
-    public float earlyTouch;
-    public float swipeSensitivity;
 
-    public BoxChecker upCheck;
-    public BoxChecker downCheck;
-    public BoxChecker leftCheck;
-    public BoxChecker rightCheck;
-    public BoxChecker mainCheck;
-    public GameManager gm;
+    void Start()
+    {
+        playerSound = GetComponent<AudioSource>();
+    }
 
-    // Check Boxes near Player
-    bool topClosed;
-    bool bottomClosed;
-    bool rightClosed;
-    bool leftClosed;
-    bool cellClosed;
+    public void MoveDown(int wt)
+    {
+        if (!musicOff)
+            PlaySound(wt);
 
-    bool nearStop;
+        if (wt == 0)
+        {
+            iTween.MoveBy(this.gameObject, iTween.Hash("y", -3.0f, "time", normal));
+        }
+        else if (wt == 1)
+        {
+            iTween.MoveBy(this.gameObject, iTween.Hash("y", -3.0f, "time", oneBlocked));
+        }
+        else if (wt > 1)
+        {
+            iTween.PunchPosition(this.gameObject, iTween.Hash("y", -1.0f, "time", twoBlocked));
+        }
+    }
 
-    // romove location difference 
-    float tx = 0, ty = 0;
-    int x = 0, y = 0;
+    public void MoveRight(int wt)
+    {
+        if (!musicOff)
+            PlaySound(wt);
 
-    // Input
-    Vector2 firstPressPos;
-    Vector2 secondPressPos;
-    Vector2 currentSwipe;
+        if (wt == 0)
+        {
+            iTween.MoveBy(this.gameObject, iTween.Hash("x", 3.0f, "time", normal));
+        }
+        else if (wt == 1)
+        {
+            iTween.MoveBy(this.gameObject, iTween.Hash("x", 3.0f, "time", oneBlocked));
+        }
+        else if (wt > 1)
+        {
+            iTween.PunchPosition(this.gameObject, iTween.Hash("x", 1.0f, "time", twoBlocked));
+        }
+    }
 
-    // About Player Game Info
-    int step;
-    float playTime;
+    void PlaySound(int wallType)
+    {
+        if (wallType == 0)
+        {
+            playerSound.clip = a_move;
+            playerSound.Play();
+        }
+        else if (wallType == 1)
+        {
+            playerSound.clip = a_break;
+            playerSound.Play();
+        }
+        else if (wallType > 1)
+        {
+            playerSound.clip = a_break;
+            playerSound.Play();
+        }
+    }
 
-    int itemA;
-    int itemB;
-    int dir;
-    float movingTime;
-
-
+    /*
     void Start () {
         playerSound = GetComponent<AudioSource>();
         step = 0;
@@ -220,46 +248,51 @@ public class PlayerMove : MonoBehaviour {
     int CheckCloseDirection(int dir)
     {
         int num = 0;
-        // Up
-        if(dir == 0)
-        {
-            if (mainCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
-                num++;
-            if (upCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
-                num++;
-            if (upCheck.wall.GetComponent<WallCtrl>().close)
-                num = 2;
-        }
-        // Down
-        else if(dir == 1)
-        {
-            if (mainCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
-                num++;
-            if (downCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
-                num++;
-            if (downCheck.wall.GetComponent<WallCtrl>().close)
-                num = 2;
-        }
-        // Left
-        else if(dir == 2)
-        {
-            if (mainCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
-                num++;
-            if (leftCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
-                num++;
-            if (leftCheck.wall.GetComponent<WallCtrl>().close)
-                num = 2;
-        }
-        // Right
-        else if(dir == 3)
-        {
-            if (mainCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
-                num++;
-            if (rightCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
-                num++;
-            if (rightCheck.wall.GetComponent<WallCtrl>().close)
-                num = 2;
-        }
+		try {
+	        // Up
+	        if(dir == 0)
+	        {
+	            if (mainCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
+	                num++;
+	            if (upCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
+	                num++;
+	            if (upCheck.wall.GetComponent<WallCtrl>().close)
+	                num = 2;
+	        }
+	        // Down
+	        else if(dir == 1)
+	        {
+	            if (mainCheck.wall.GetComponent<WallCtrl>().bw.activeSelf)
+	                num++;
+	            if (downCheck.wall.GetComponent<WallCtrl>().tw.activeSelf)
+	                num++;
+	            if (downCheck.wall.GetComponent<WallCtrl>().close)
+	                num = 2;
+	        }
+	        // Left
+	        else if(dir == 2)
+	        {
+	            if (mainCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
+	                num++;
+	            if (leftCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
+	                num++;
+	            if (leftCheck.wall.GetComponent<WallCtrl>().close)
+	                num = 2;
+	        }
+	        // Right
+	        else if(dir == 3)
+	        {
+	            if (mainCheck.wall.GetComponent<WallCtrl>().rw.activeSelf)
+	                num++;
+	            if (rightCheck.wall.GetComponent<WallCtrl>().lw.activeSelf)
+	                num++;
+	            if (rightCheck.wall.GetComponent<WallCtrl>().close)
+	                num = 2;
+	        }
+		}
+		catch {
+			num = 0;
+		}
 
         return num;
     }
@@ -269,5 +302,5 @@ public class PlayerMove : MonoBehaviour {
         if (CheckCloseDirection(1) > 1 && CheckCloseDirection(3) > 1)
             gm.isGameOver = true;
     }
-    
+    */
 }
