@@ -10,8 +10,6 @@ public class LoadingController : MonoBehaviour {
     public Color EndColor;
 
 	public float fadeSpeed;
-	public Text text;
-	public Image image1;
 	public Image image2;
     public Camera Cam;
 
@@ -42,30 +40,13 @@ public class LoadingController : MonoBehaviour {
     }
 
 	void Clear() {
-		Debug.Log ("Clear Called");
-		Color color = text.color;
-		color.a = 0;
-		text.color = color;
-
-		color = image1.color;
-		color.a = 0;
-		image1.color = color;
-
-		color = image2.color;
+		Color color = image2.color;
 		color.a = 0;
 		image2.color = color;
 	}
 
 	void FadeIn(float timer) {
-		Color color = text.color;
-		color.a = timer;
-		text.color = color;
-
-		color = image1.color;
-		color.a = timer;
-		image1.color = color;
-
-		color = image2.color;
+		Color color = image2.color;
 		color.a = timer;
 		image2.color = color;
 	}
