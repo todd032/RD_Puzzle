@@ -18,6 +18,8 @@ public class InfoContainer : MonoBehaviour {
     public int[] BestScore;
     bool notFirstSceneCheck;
 
+	public bool seeAdd;
+
 	void Awake()
     {
         if (!notFirstSceneCheck)

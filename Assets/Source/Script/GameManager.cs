@@ -265,6 +265,11 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+	public void WatchAds()
+	{
+		haedomoney.ShowRewardedAd ();
+	}
+
 	IEnumerator WaitForRequest(WWW www)
 	{
 		yield return www;
