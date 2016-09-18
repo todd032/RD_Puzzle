@@ -104,12 +104,10 @@ public class GameManager : MonoBehaviour {
 
         if (stageNumber == 0)
         {
-            if (server_url == null || server_url == "")
-            {
-                server_url = "http://bismute.xyz:3000";
-            }
-            WWW www = new WWW(server_url);
-            StartCoroutine(WaitForRequest(www));
+			string md = Resources.Load("infinite/infinite" + Random.Range(0, 1000)).ToString();
+			temp = json_parser (md);
+			ServerMapMaker (temp);
+			game_start = true;
         }
         else
         {
@@ -394,8 +392,6 @@ public class GameManager : MonoBehaviour {
         info.maxCombo = 0;
         Time.timeScale = 1;
 
-		haedomoney.ShowRewardedAd ();
-
         if (info.StageNum == 0)
         {
             SceneManager.LoadScene("Menu");
@@ -415,9 +411,6 @@ public class GameManager : MonoBehaviour {
         info.maxCombo = 0;
         Time.timeScale = 1;
 
-		if(score > 10000)
-			haedomoney.ShowRewardedAd ();
-
         SceneManager.LoadScene("InGame");
     }
 
@@ -427,9 +420,6 @@ public class GameManager : MonoBehaviour {
 		info.combo = 0;
         info.playtime = 0;
         info.maxCombo = 0;
-
-		if (info.StageNum % 3 == 0)
-			haedomoney.ShowRewardedAd ();
 
         info.StageNum++;
         SceneManager.LoadScene("InGame");
@@ -637,4 +627,13 @@ public class GameManager : MonoBehaviour {
         else if (stageNumber == 5)
             Tuto5.SetActive(true);
     }
+
+	void downloadMapdata()
+	{
+		if (server_url == null || server_url == "") {
+			server_url = "http://bismute.xyz:3000";
+		}
+		WWW www = new WWW (server_url);
+		StartCoroutine (WaitForRequest (www));
+	}
 }
